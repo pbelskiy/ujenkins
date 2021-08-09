@@ -89,7 +89,7 @@ class JenkinsClient(Jenkins):
         """
         super().__init__()
 
-        self.host = url
+        self.host = url.rstrip('/')
         self.session = Session()
 
         if user and password:
@@ -125,7 +125,7 @@ class JenkinsClient(Jenkins):
 
         response = self.session.request(
             method,
-            '{host}/{path}'.format(
+            '{host}{path}'.format(
                 host=self.host,
                 path=path,
             ),

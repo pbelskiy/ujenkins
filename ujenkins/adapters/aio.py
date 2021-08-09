@@ -104,7 +104,7 @@ class AsyncJenkinsClient(Jenkins):
         super().__init__()
 
         self.loop = loop or asyncio.get_event_loop()
-        self.host = url
+        self.host = url.rstrip('/')
 
         self.auth = None
         if user and password:
