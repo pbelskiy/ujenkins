@@ -1,5 +1,7 @@
 import asyncio
+import json
 
+from http import HTTPStatus
 from typing import Any, Callable, Optional, Union
 
 from aiohttp import (
@@ -10,7 +12,7 @@ from aiohttp import (
     ClientTimeout,
 )
 
-from ujenkins.core import Jenkins, JenkinsError, Response
+from ujenkins.core import Jenkins, JenkinsError, JenkinsNotFoundError, Response
 
 
 class RetryClientSession:
@@ -105,6 +107,7 @@ class AsyncJenkinsClient(Jenkins):
 
         self.loop = loop or asyncio.get_event_loop()
         self.host = url.rstrip('/')
+        self.crumb = None  # type: Any
 
         self.auth = None
         if user and password:
@@ -121,16 +124,20 @@ class AsyncJenkinsClient(Jenkins):
         if timeout:
             self.timeout = ClientTimeout(total=timeout)
 
-    async def _request(self,
-                       method: str,
-                       path: str,
-                       *,
-                       callback: Optional[Callable] = None,
-                       **kwargs: Any
-                       ) -> Any:
+    async def _http_request(self,
+                            method: str,
+                            path: str,
+                            *,
+                            callback: Optional[Callable] = None,
+                            **kwargs: Any
+                            ) -> Any:
 
         if self.timeout and 'timeout' not in kwargs:
             kwargs['timeout'] = self.timeout
+
+        if self.crumb:
+            kwargs.setdefault('headers', {})
+            kwargs['headers'].update(self.crumb)
 
         response = await self.session.request(
             method,
@@ -151,6 +158,35 @@ class AsyncJenkinsClient(Jenkins):
         )
 
         return result
+
+    async def _get_crumb(self) -> Union[bool, dict]:
+        try:
+            response = await self._http_request('GET', '/crumbIssuer/api/json')
+            content = json.loads(response)
+            self.crumb = {content['crumbRequestField']: content['crumb']}
+            return self.crumb
+        except JenkinsNotFoundError:
+            return False
+
+    async def _request(self,
+                       method: str,
+                       path: str,
+                       **kwargs: Any
+                       ) -> Any:
+        """
+        Core class method for endpoints, which wraps auto crumb detection.
+        """
+        if self.crumb:
+            try:
+                return await self._http_request(method, path, **kwargs)
+            except JenkinsError as e:
+                if e.status != HTTPStatus.FORBIDDEN:
+                    raise
+
+        if self.crumb is not False:
+            self.crumb = await self._get_crumb()
+
+        return await self._http_request(method, path, **kwargs)
 
     async def close(self) -> None:  # type: ignore
         """

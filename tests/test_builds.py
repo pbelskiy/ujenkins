@@ -22,3 +22,15 @@ def test_get(client):
     response = client.builds.get('job')
     assert len(response) == 1
     assert response[0]['number'] == 1
+
+
+@responses.activate
+def test_start(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/build.+'),
+        headers={'Location': 'http://localhost:8080/queue/item/424/'}
+    )
+
+    response = client.builds.start('job')
+    assert response == 424

@@ -30,10 +30,8 @@ class Jenkins:
 
             raise JenkinsError(
                 'Request error [{}], {}'.format(response.status, details),
+                status=response.status,
             )
-
-        if response.status != HTTPStatus.OK:
-            raise JenkinsError(response.body)
 
         if not callback:
             return response.body

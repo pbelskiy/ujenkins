@@ -13,4 +13,7 @@ def aiohttp_mock():
 
 @pytest.fixture
 def client():
-    yield JenkinsClient('http://server')
+    j = JenkinsClient('http://server')
+    # disable crumb wrapper for simplify testing
+    j.crumb = False
+    yield j

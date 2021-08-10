@@ -1,6 +1,6 @@
 import json
 
-from typing import List, Optional
+from typing import Any, List, Optional
 
 
 class Builds:
@@ -34,4 +34,68 @@ class Builds:
                 job_name
             ),
             callback=callback,
+        )
+
+    def start(self,
+              name: str,
+              parameters: Optional[dict] = None,
+              delay: Optional[int] = 0
+              ) -> Optional[int]:
+        """
+        Enqueue new build with delay (default is 0 seconds, means immediately)
+
+        Note about delay (quiet-period):
+        https://www.jenkins.io/blog/2010/08/11/quiet-period-feature/
+
+        Args:
+            name (str): job name or path (if in folder).
+            parameters (int): parameters of triggering build.
+            delay (int): delay before start.
+
+        Returns:
+            Optional[int]: queue item id.
+        """
+        def callback(response) -> Optional[int]:
+            # FIXME: on Jenkins 1.554 there is problem, no queue id returned
+            queue_item_url = response.headers['location']
+            try:
+                queue_id = queue_item_url.rstrip('/').split('/')[-1]
+                return int(queue_id)
+            except ValueError:
+                return None
+
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        data = None
+
+        if parameters:
+            path = '/{}/job/{}/buildWithParameters'.format(
+                folder_name,
+                job_name
+            )
+
+            formatted_parameters = [
+                {'name': k, 'value': str(v)} for k, v in parameters.items()
+            ]  # type: Any
+
+            if len(formatted_parameters) == 1:
+                formatted_parameters = formatted_parameters[0]
+
+            data = {
+                'json': json.dumps({
+                    'parameter': formatted_parameters,
+                    'statusCode': '303',
+                    'redirectTo': '.',
+                }),
+                **parameters,
+            }
+        else:
+            path = '/job/{}/build'.format(name)
+
+        return self.jenkins._request(
+            'POST',
+            path,
+            callback=callback,
+            params={'delay': delay},
+            data=data,
         )

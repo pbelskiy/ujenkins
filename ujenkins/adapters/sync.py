@@ -1,10 +1,14 @@
-from typing import Any, Callable, Optional
+import json
+
+from http import HTTPStatus
+from typing import Any, Callable, Optional, Union
 
 from requests import Session
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from ujenkins.core import Jenkins, Response
+from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
 
 class JenkinsClient(Jenkins):
@@ -97,6 +101,7 @@ class JenkinsClient(Jenkins):
 
         self.timeout = timeout
         self.verify = verify
+        self.crumb = None  # type: Any
 
         if not retry:
             return
@@ -112,16 +117,20 @@ class JenkinsClient(Jenkins):
         self.session.mount('http://', adapter)
         self.session.mount('https://', adapter)
 
-    def _request(self,
-                 method: str,
-                 path: str,
-                 *,
-                 callback: Optional[Callable] = None,
-                 **kwargs: Any
-                 ) -> Any:
+    def _http_request(self,
+                      method: str,
+                      path: str,
+                      *,
+                      callback: Optional[Callable] = None,
+                      **kwargs: Any
+                      ) -> Any:
 
         if self.timeout and 'timeout' not in kwargs:
             kwargs['timeout'] = self.timeout
+
+        if self.crumb:
+            kwargs.setdefault('headers', {})
+            kwargs['headers'].update(self.crumb)
 
         response = self.session.request(
             method,
@@ -129,6 +138,7 @@ class JenkinsClient(Jenkins):
                 host=self.host,
                 path=path,
             ),
+            allow_redirects=False,
             verify=self.verify,
             **kwargs
         )
@@ -139,6 +149,35 @@ class JenkinsClient(Jenkins):
         )
 
         return result
+
+    def _get_crumb(self) -> Union[bool, dict]:
+        try:
+            response = self._http_request('GET', '/crumbIssuer/api/json')
+            content = json.loads(response)
+            self.crumb = {content['crumbRequestField']: content['crumb']}
+            return self.crumb
+        except JenkinsNotFoundError:
+            return False
+
+    def _request(self,
+                 method: str,
+                 path: str,
+                 **kwargs: Any
+                 ) -> Any:
+        """
+        Core class method for endpoints, which wraps auto crumb detection.
+        """
+        if self.crumb:
+            try:
+                return self._http_request(method, path, **kwargs)
+            except JenkinsError as e:
+                if e.status != HTTPStatus.FORBIDDEN:
+                    raise
+
+        if self.crumb is not False:
+            self.crumb = self._get_crumb()
+
+        return self._http_request(method, path, **kwargs)
 
     def close(self) -> None:
         """
