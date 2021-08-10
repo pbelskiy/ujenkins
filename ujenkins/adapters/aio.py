@@ -141,7 +141,7 @@ class AsyncJenkinsClient(Jenkins):
 
         response = await self.session.request(
             method,
-            '{host}/{path}'.format(
+            '{host}{path}'.format(
                 host=self.host,
                 path=path,
             ),
