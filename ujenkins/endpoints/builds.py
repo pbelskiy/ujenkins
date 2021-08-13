@@ -99,3 +99,21 @@ class Builds:
             params={'delay': delay},
             data=data,
         )
+
+    def stop(self, name: str, build_id: int) -> None:
+        """
+        Stop specified build.
+
+        Args:
+            name (str): job name or path (if in folder).
+            build_id (int): build identifier.
+
+        Returns:
+            None
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        return self.jenkins._request(
+            'POST',
+            '/{}/job/{}/{}/stop'.format(folder_name, job_name, build_id)
+        )

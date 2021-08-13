@@ -34,3 +34,13 @@ def test_start(client):
 
     response = client.builds.start('job')
     assert response == 424
+
+
+@responses.activate
+def test_stop(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/stop'),
+    )
+
+    client.builds.stop('job', 424)
