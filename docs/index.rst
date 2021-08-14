@@ -15,6 +15,12 @@ Core
 .. automodule:: ujenkins.core
     :members:
 
+Builds
+~~~~~~
+
+.. autoclass:: ujenkins.builds.Builds
+    :members:
+
 Exceptions
 ~~~~~~~~~~
 
