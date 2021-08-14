@@ -2,7 +2,7 @@ from collections import namedtuple
 from http import HTTPStatus
 from typing import Any, Callable, Optional, Tuple
 
-from ujenkins.endpoints import Builds
+from ujenkins.endpoints import Builds, System
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
 Response = namedtuple('Response', ['status', 'headers', 'body'])
@@ -12,6 +12,7 @@ class Jenkins:
 
     def __init__(self):
         self.builds = Builds(self)
+        self.system = System(self)
 
     @staticmethod
     def _process(response: Response, callback: Optional[Callable] = None) -> Any:

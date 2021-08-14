@@ -21,6 +21,12 @@ Builds
 .. autoclass:: ujenkins.builds.Builds
     :members:
 
+System
+~~~~~~
+
+.. autoclass:: aiojenkins.system.System
+    :members:
+
 Exceptions
 ~~~~~~~~~~
 
