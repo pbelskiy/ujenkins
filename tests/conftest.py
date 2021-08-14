@@ -17,3 +17,4 @@ def client():
     # disable crumb wrapper for simplify testing
     j.crumb = False
     yield j
+    j.close()
