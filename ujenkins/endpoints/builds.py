@@ -17,10 +17,13 @@ class Builds:
 
         Returns:
             List: list of build for specified job.
-            builds = [
-              {'number': 1, 'url': 'http://localhost/job/test/1/'},
-              {'number': 2, 'url': 'http://localhost/job/test/2/'}
-            ]
+
+            .. code-block:: python
+
+                builds = [
+                  {'number': 1, 'url': 'http://localhost/job/test/1/'},
+                  {'number': 2, 'url': 'http://localhost/job/test/2/'}
+                ]
         """
         def callback(response) -> List[dict]:
             return json.loads(response.body)['allBuilds']

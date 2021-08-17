@@ -18,13 +18,13 @@ Core
 Builds
 ~~~~~~
 
-.. autoclass:: ujenkins.builds.Builds
+.. autoclass:: ujenkins.endpoints.builds.Builds
     :members:
 
 System
 ~~~~~~
 
-.. autoclass:: aiojenkins.system.System
+.. autoclass:: ujenkins.endpoints.system.System
     :members:
 
 Exceptions
