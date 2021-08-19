@@ -54,3 +54,56 @@ Comparison to other libraries
 .. _aiojenkins: https://pypi.org/project/aiojenkins/
 .. _python-jenkins: https://pypi.org/project/python-jenkins/
 .. _jenkinsapi: https://pypi.org/project/jenkinsapi/
+
+Usage
+-----
+
+Main advantage of this library is that same API interfaces used for sync
+and async syntax.
+
+Get Jenkins version using sync client:
+
+.. code:: python
+
+    from ujenkins import JenkinsClient
+
+    client = JenkinsClient('http://server', 'login', 'password')
+    version = client.system.get_version()
+    print(version)
+
+With async client:
+
+.. code:: python
+
+    import asyncio
+    from ujenkins import AsyncJenkinsClient
+
+    client = AsyncJenkinsClient('http://server', 'login', 'password')
+
+    async def example():
+        await client.system.get_version()
+
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(example())
+    finally:
+        loop.run_until_complete(client.close())
+        loop.close()
+
+`Please look at tests directory for more examples. <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
+
+Testing
+-------
+
+Prerequisites: `tox`
+
+Then just run tox, all dependencies and checks will run automatically
+
+::
+
+    tox
+
+Contributing
+------------
+
+Any contributions are welcome!
