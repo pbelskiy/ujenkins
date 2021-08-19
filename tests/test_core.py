@@ -129,3 +129,24 @@ def test_sync_crumb():
     assert client.crumb['Jenkins-Crumb'] == \
         '9c427004e7ed327a230436ee3103856d8df1eec7f2964a87d3d95e850974c4cd'
     assert version.major == 2
+
+
+@pytest.mark.asyncio
+async def test_async_crumb(aiohttp_mock):
+    aiohttp_mock.get(
+        re.compile(r'.+/crumbIssuer/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=CRUMB_JSON
+    )
+
+    aiohttp_mock.get(
+        re.compile(r'.+/'),
+        headers={'X-Jenkins': '2.0.129'}
+    )
+
+    client = AsyncJenkinsClient('http://server', 'login', 'password')
+    version = await client.system.get_version()
+
+    assert client.crumb['Jenkins-Crumb'] == \
+        '9c427004e7ed327a230436ee3103856d8df1eec7f2964a87d3d95e850974c4cd'
+    assert version.major == 2
