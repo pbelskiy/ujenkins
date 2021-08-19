@@ -45,9 +45,9 @@ Comparison to other libraries
 +-------------------+-------+-------+
 | `aiojenkins`_     |  NO   |  YES  |
 +-------------------+-------+-------+
-| `python-jenkins`_ |  OK   |   NO  |
+| `python-jenkins`_ |  YES  |  NO   |
 +-------------------+-------+-------+
-| `jenkinsapi`_     |  OK   |   NO  |
+| `jenkinsapi`_     |  YES  |  NO   |
 +-------------------+-------+-------+
 
 .. _ujenkins: https://pypi.org/project/ujenkins/
