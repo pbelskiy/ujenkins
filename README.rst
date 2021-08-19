@@ -67,9 +67,12 @@ Get Jenkins version using sync client:
 
     from ujenkins import JenkinsClient
 
-    client = JenkinsClient('http://server', 'login', 'password')
-    version = client.system.get_version()
-    print(version)
+    def example():
+        client = JenkinsClient('http://server', 'login', 'password')
+        version = client.system.get_version()
+        print(version)
+
+    example()
 
 With async client:
 
@@ -78,17 +81,12 @@ With async client:
     import asyncio
     from ujenkins import AsyncJenkinsClient
 
-    client = AsyncJenkinsClient('http://server', 'login', 'password')
-
     async def example():
-        await client.system.get_version()
+        client = AsyncJenkinsClient('http://server', 'login', 'password')
+        version = await client.system.get_version()
+        print(version)
 
-    loop = asyncio.get_event_loop()
-    try:
-        loop.run_until_complete(example())
-    finally:
-        loop.run_until_complete(client.close())
-        loop.close()
+    asyncio.run(example())
 
 `Please look at tests directory for more examples. <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
 
