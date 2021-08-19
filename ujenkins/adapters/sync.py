@@ -1,5 +1,3 @@
-import json
-
 from http import HTTPStatus
 from typing import Any, Callable, Optional, Union
 
@@ -7,6 +5,7 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from ujenkins.adapters import CRUMB_ISSUER_URL
 from ujenkins.core import Jenkins, Response
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
@@ -152,9 +151,8 @@ class JenkinsClient(Jenkins):
 
     def _get_crumb(self) -> Union[bool, dict]:
         try:
-            response = self._http_request('GET', '/crumbIssuer/api/json')
-            content = json.loads(response)
-            self.crumb = {content['crumbRequestField']: content['crumb']}
+            response = self._http_request('GET', CRUMB_ISSUER_URL)
+            self.crumb = {response['crumbRequestField']: response['crumb']}
             return self.crumb
         except JenkinsNotFoundError:
             return False

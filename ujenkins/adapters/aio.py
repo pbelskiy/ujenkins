@@ -1,5 +1,4 @@
 import asyncio
-import json
 
 from http import HTTPStatus
 from typing import Any, Callable, Optional, Union
@@ -12,6 +11,7 @@ from aiohttp import (
     ClientTimeout,
 )
 
+from ujenkins.adapters import CRUMB_ISSUER_URL
 from ujenkins.core import Jenkins, JenkinsError, JenkinsNotFoundError, Response
 
 
@@ -161,9 +161,8 @@ class AsyncJenkinsClient(Jenkins):
 
     async def _get_crumb(self) -> Union[bool, dict]:
         try:
-            response = await self._http_request('GET', '/crumbIssuer/api/json')
-            content = json.loads(response)
-            self.crumb = {content['crumbRequestField']: content['crumb']}
+            response = await self._http_request('GET', CRUMB_ISSUER_URL)
+            self.crumb = {response['crumbRequestField']: response['crumb']}
             return self.crumb
         except JenkinsNotFoundError:
             return False

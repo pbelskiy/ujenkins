@@ -1,3 +1,5 @@
+import re
+
 from http import HTTPStatus
 
 import aiohttp
@@ -5,6 +7,14 @@ import pytest
 import responses
 
 from ujenkins import AsyncJenkinsClient, JenkinsClient, JenkinsError
+
+CRUMB_JSON = """
+{
+  "_class": "hudson.security.csrf.DefaultCrumbIssuer",
+  "crumb": "9c427004e7ed327a230436ee3103856d8df1eec7f2964a87d3d95e850974c4cd",
+  "crumbRequestField": "Jenkins-Crumb"
+}
+"""
 
 
 @responses.activate
@@ -96,3 +106,26 @@ def test_retry_argument_validation():
 
     with pytest.raises(JenkinsError):
         AsyncJenkinsClient('http://server', retry=dict(total=0))
+
+
+@responses.activate
+def test_sync_crumb():
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/crumbIssuer/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=CRUMB_JSON
+    )
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/'),
+        headers={'X-Jenkins': '2.0.129'}
+    )
+
+    client = JenkinsClient('http://server')
+    version = client.system.get_version()
+
+    assert client.crumb['Jenkins-Crumb'] == \
+        '9c427004e7ed327a230436ee3103856d8df1eec7f2964a87d3d95e850974c4cd'
+    assert version.major == 2
