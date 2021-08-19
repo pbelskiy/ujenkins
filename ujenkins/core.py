@@ -1,3 +1,5 @@
+import json
+
 from collections import namedtuple
 from http import HTTPStatus
 from typing import Any, Callable, Optional, Tuple
@@ -34,10 +36,13 @@ class Jenkins:
                 status=response.status,
             )
 
-        if not callback:
-            return response.body
+        if callback:
+            return callback(response)
 
-        return callback(response)
+        if 'application/json' in response.headers.get('Content-Type'):
+            return json.loads(response.body)
+
+        return response.body
 
     @staticmethod
     def _get_folder_and_job_name(name: str) -> Tuple[str, str]:

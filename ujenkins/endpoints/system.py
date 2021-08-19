@@ -27,3 +27,12 @@ class System:
             return JenkinsVersion(*map(int, header.split('.')))
 
         return self.jenkins._request('GET', '/', callback=callback)
+
+    def get_status(self) -> dict:
+        """
+        Get server status.
+
+        Returns:
+            dict: jenkins server details.
+        """
+        return self.jenkins._request('GET', '/api/json')
