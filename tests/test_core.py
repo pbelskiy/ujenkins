@@ -1,4 +1,5 @@
 import re
+import sys
 
 from http import HTTPStatus
 
@@ -131,6 +132,7 @@ def test_sync_crumb():
     assert version.major == 2
 
 
+@pytest.mark.skipif(sys.version_info < (3, 6), reason='aiohttp mock problem')
 @pytest.mark.asyncio
 async def test_async_crumb(aiohttp_mock):
     aiohttp_mock.get(
