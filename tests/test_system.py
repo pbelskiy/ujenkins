@@ -98,3 +98,13 @@ def test_is_ready(client):
 
     ready = client.system.is_ready()
     assert ready is True
+
+
+@responses.activate
+def test_quiet_down(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/quietDown'),
+    )
+
+    client.system.quiet_down()

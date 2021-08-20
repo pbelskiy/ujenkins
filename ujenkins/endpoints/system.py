@@ -52,3 +52,12 @@ class System:
                 return False
 
         return self.jenkins._request('GET', '/api/json', callback=callback)
+
+    def quiet_down(self) -> None:
+        """
+        Start server quiet down period, new builds will not be started.
+
+        Returns:
+            None
+        """
+        return self.jenkins._request('POST', '/quietDown')
