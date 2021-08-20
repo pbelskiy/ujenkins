@@ -61,6 +61,19 @@ STATUS_JSON = """{
 
 
 @responses.activate
+def test_get_status(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=STATUS_JSON
+    )
+
+    status = client.system.get_status()
+    assert status['quietingDown'] is False
+
+
+@responses.activate
 def test_get_version(client):
     responses.add(
         responses.GET,
@@ -75,7 +88,7 @@ def test_get_version(client):
 
 
 @responses.activate
-def test_get_status(client):
+def test_is_ready(client):
     responses.add(
         responses.GET,
         re.compile(r'.+/api/json'),
@@ -83,5 +96,5 @@ def test_get_status(client):
         body=STATUS_JSON
     )
 
-    status = client.system.get_status()
-    assert status['quietingDown'] is False
+    ready = client.system.is_ready()
+    assert ready is True

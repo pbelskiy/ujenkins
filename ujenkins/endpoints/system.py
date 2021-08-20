@@ -12,6 +12,15 @@ class System:
     def __init__(self, jenkins):
         self.jenkins = jenkins
 
+    def get_status(self) -> dict:
+        """
+        Get server status.
+
+        Returns:
+            dict: jenkins server details.
+        """
+        return self.jenkins._request('GET', '/api/json')
+
     def get_version(self) -> JenkinsVersion:
         """
         Get server version.
@@ -28,11 +37,18 @@ class System:
 
         return self.jenkins._request('GET', '/', callback=callback)
 
-    def get_status(self) -> dict:
+    def is_ready(self) -> bool:
         """
-        Get server status.
+        Determines is server loaded and ready for work.
 
         Returns:
-            dict: jenkins server details.
+            bool: ready state.
         """
-        return self.jenkins._request('GET', '/api/json')
+        def callback(response):
+            try:
+                status = response.body
+                return 'mode' in status
+            except JenkinsError:
+                return False
+
+        return self.jenkins._request('GET', '/api/json', callback=callback)
