@@ -61,3 +61,12 @@ class System:
             None
         """
         return self.jenkins._request('POST', '/quietDown')
+
+    def cancel_quiet_down(self) -> None:
+        """
+        Cancel server quiet down period.
+
+        Returns:
+            None
+        """
+        return self.jenkins._request('POST', '/cancelQuietDown')

@@ -108,3 +108,13 @@ def test_quiet_down(client):
     )
 
     client.system.quiet_down()
+
+
+@responses.activate
+def test_cancel_quiet_down(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/cancelQuietDown'),
+    )
+
+    client.system.cancel_quiet_down()
