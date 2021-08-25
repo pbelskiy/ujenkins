@@ -70,3 +70,12 @@ class System:
             None
         """
         return self.jenkins._request('POST', '/cancelQuietDown')
+
+    def restart(self) -> None:
+        """
+        Restart server immediately.
+
+        Returns:
+            None
+        """
+        return self.jenkins._request('POST', '/restart')

@@ -118,3 +118,13 @@ def test_cancel_quiet_down(client):
     )
 
     client.system.cancel_quiet_down()
+
+
+@responses.activate
+def test_restart(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/restart'),
+    )
+
+    client.system.restart()
