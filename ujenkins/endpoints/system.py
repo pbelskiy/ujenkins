@@ -79,3 +79,12 @@ class System:
             None
         """
         return self.jenkins._request('POST', '/restart')
+
+    def safe_restart(self) -> None:
+        """
+        Restart server when installation is complete and no jobs are running.
+
+        Returns:
+            None
+        """
+        return self.jenkins._request('POST', '/safeRestart')

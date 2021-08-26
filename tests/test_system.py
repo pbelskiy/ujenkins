@@ -128,3 +128,13 @@ def test_restart(client):
     )
 
     client.system.restart()
+
+
+@responses.activate
+def test_safe_restart(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/safeRestart'),
+    )
+
+    client.system.safe_restart()
