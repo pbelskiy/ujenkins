@@ -59,6 +59,17 @@ STATUS_JSON = """{
 }
 """
 
+TOKEN_JSON = """
+  {
+    "status": "ok",
+    "data": {
+        "tokenName": "test",
+        "tokenUuid": "a8f93d3d-e431-4c88-ad6f-f71dd50e774f",
+        "tokenValue":"11064db87a080c7dc478fedfd8cd9d4265"
+    }
+  }
+"""
+
 
 @responses.activate
 def test_get_status(client):
@@ -138,3 +149,17 @@ def test_safe_restart(client):
     )
 
     client.system.safe_restart()
+
+
+@responses.activate
+def test_generate_token(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/me/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken'),
+        content_type='application/json;charset=utf-8',
+        body=TOKEN_JSON,
+    )
+
+    value, uuid = client.system.generate_token('test')
+    assert uuid == 'a8f93d3d-e431-4c88-ad6f-f71dd50e774f'
+    assert value == '11064db87a080c7dc478fedfd8cd9d4265'

@@ -1,4 +1,6 @@
-from typing import NamedTuple
+import json
+
+from typing import NamedTuple, Tuple
 
 from ujenkins.exceptions import JenkinsError
 
@@ -88,3 +90,35 @@ class System:
             None
         """
         return self.jenkins._request('POST', '/safeRestart')
+
+    @staticmethod
+    def _build_token_url(suffix: str) -> str:
+        return '/me/descriptorByName/jenkins.security.ApiTokenProperty/' + suffix
+
+    def generate_token(self, name: str) -> Tuple[str, str]:
+        """
+        Generate new API token.
+
+        Args:
+            name (str): name of token.
+
+        Returns:
+            Tuple[str, str]: tokenValue - uses for authorization,
+                             tokenUuid - uses for revoke
+        """
+        def callback(response):
+            content = json.loads(response.body)
+
+            if content['status'] != 'ok':
+                raise JenkinsError('Non OK status returned: ' + str(content))
+
+            return content['data']['tokenValue'], content['data']['tokenUuid']
+
+        params = {'newTokenName': name}
+
+        return self.jenkins._request(
+            'POST',
+            self._build_token_url('generateNewToken'),
+            callback=callback,
+            params=params,
+        )

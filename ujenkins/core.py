@@ -36,6 +36,7 @@ class Jenkins:
                 status=response.status,
             )
 
+        # TODO: add response type annotations, parse json for callback
         if callback:
             return callback(response)
 
