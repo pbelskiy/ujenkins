@@ -122,3 +122,21 @@ class System:
             callback=callback,
             params=params,
         )
+
+    def revoke_token(self, token_uuid: str) -> None:
+        """
+        Revoke API token, please note that uuid is used, not value.
+
+        Args:
+            token_uuid (str): uuid of token to be revoked.
+
+        Returns:
+            None
+        """
+        params = {'tokenUuid': token_uuid}
+
+        return self.jenkins._request(
+            'POST',
+            self._build_token_url('revoke'),
+            params=params
+        )

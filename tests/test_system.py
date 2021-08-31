@@ -163,3 +163,13 @@ def test_generate_token(client):
     value, uuid = client.system.generate_token('test')
     assert uuid == 'a8f93d3d-e431-4c88-ad6f-f71dd50e774f'
     assert value == '11064db87a080c7dc478fedfd8cd9d4265'
+
+
+@responses.activate
+def test_revoke_token(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/me/descriptorByName/jenkins.security.ApiTokenProperty/revoke'),
+    )
+
+    client.system.revoke_token('a8f93d3d-e431-4c88-ad6f-f71dd50e774f')
