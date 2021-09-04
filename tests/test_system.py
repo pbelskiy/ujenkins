@@ -173,3 +173,15 @@ def test_revoke_token(client):
     )
 
     client.system.revoke_token('a8f93d3d-e431-4c88-ad6f-f71dd50e774f')
+
+
+@responses.activate
+def test_run_groovy_script(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/scriptText'),
+        body='test'
+    )
+
+    response = client.system.run_groovy_script('print("test")')
+    assert response == 'test'

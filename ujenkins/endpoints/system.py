@@ -140,3 +140,19 @@ class System:
             self._build_token_url('revoke'),
             params=params
         )
+
+    def run_groovy_script(self, script: str) -> str:
+        """
+        Execute Groovy script on the server.
+
+        Args:
+            script (str): script content.
+
+        Returns:
+            str: output of script.
+        """
+        return self.jenkins._request(
+            'POST',
+            '/scriptText',
+            data={'script': script}
+        )
