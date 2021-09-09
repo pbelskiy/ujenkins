@@ -44,3 +44,13 @@ def test_stop(client):
     )
 
     client.builds.stop('job', 424)
+
+
+@responses.activate
+def test_delete(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/doDelete'),
+    )
+
+    client.builds.delete('job', 424)
