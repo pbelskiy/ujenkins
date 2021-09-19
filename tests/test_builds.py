@@ -84,6 +84,19 @@ def test_get_info(client):
 
 
 @responses.activate
+def test_get_output(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/job/.+/consoleText'),
+        content_type='text/plain;charset=utf-8',
+        body='Started by user admin\nRunning as SYSTEM',
+    )
+
+    response = client.builds.get_output('job', 14)
+    assert 'Started' in response
+
+
+@responses.activate
 def test_start(client):
     responses.add(
         responses.POST,

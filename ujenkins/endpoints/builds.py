@@ -57,6 +57,24 @@ class Builds:
             '/{}/job/{}/{}/api/json'.format(folder_name, job_name, build_id)
         )
 
+    def get_output(self, name: str, build_id: int) -> str:
+        """
+        Get console output of specified build.
+
+        Args:
+            name (str): job name or path (if in folder).
+            build_id (int): build identifier.
+
+        Returns:
+            str: build output.
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        return self.jenkins._request(
+            'GET',
+            '/{}/job/{}/{}/consoleText'.format(folder_name, job_name, build_id)
+        )
+
     def start(self,
               name: str,
               parameters: Optional[dict] = None,
