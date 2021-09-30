@@ -21,6 +21,12 @@ Builds
 .. autoclass:: ujenkins.endpoints.builds.Builds
     :members:
 
+Nodes
+~~~~~
+
+.. autoclass:: ujenkins.endpoints.nodes.Nodes
+    :members:
+
 System
 ~~~~~~
 
