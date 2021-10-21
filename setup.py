@@ -37,7 +37,6 @@ setup_args = dict(
     packages=find_packages(),
     package_data={'ujenkins': ['*']},
     author='Petr Belskiy',
-    author_email='petr.belskiy@gmail.com',
     keywords=['jenkins'],
     url='https://github.com/pbelskiy/ujenkins',
     download_url='https://pypi.org/project/ujenkins'
