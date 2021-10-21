@@ -40,3 +40,20 @@ class Nodes:
             '/computer/api/json',
             callback=callback,
         )
+
+    def get_info(self, name: str) -> dict:
+        """
+        Get node detailed information.
+
+        Args:
+            name (str): node name.
+
+        Returns:
+            dict: detailed node information.
+        """
+        name = self._normalize_name(name)
+
+        return self.jenkins._request(
+            'GET',
+            '/computer/{}/api/json'.format(name),
+        )
