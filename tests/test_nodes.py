@@ -156,6 +156,26 @@ NODE_INFO_JSON = """{
 }
 """
 
+NODE_CONFIG_XML = r"""<?xml version="1.1" encoding="UTF-8"?>
+<slave>
+  <name>buildbot</name>
+  <description></description>
+  <remoteFS>/home/user/jenkins</remoteFS>
+  <numExecutors>2</numExecutors>
+  <mode>NORMAL</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+  <launcher class="hudson.slaves.JNLPLauncher">
+    <workDirSettings>
+      <disabled>false</disabled>
+      <internalDir>remoting</internalDir>
+      <failIfWorkDirIsMissing>false</failIfWorkDirIsMissing>
+    </workDirSettings>
+    <webSocket>false</webSocket>
+  </launcher>
+  <label></label>
+  <nodeProperties/>
+"""
+
 
 @responses.activate
 def test_get(client):
@@ -181,3 +201,16 @@ def test_get_info(client):
 
     response = client.nodes.get_info('master')
     assert response['numExecutors'] == 2
+
+
+@responses.activate
+def test_get_config(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/computer/.+/config.xml'),
+        content_type='application/xml',
+        body=NODE_CONFIG_XML,
+    )
+
+    response = client.nodes.get_config('buildbot')
+    assert '<name>buildbot</name>' in response

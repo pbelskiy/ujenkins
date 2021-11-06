@@ -57,3 +57,20 @@ class Nodes:
             'GET',
             '/computer/{}/api/json'.format(name),
         )
+
+    def get_config(self, name: str) -> str:
+        """
+        Return node config in XML format.
+
+        Args:
+            name (str): node name.
+
+        Returns:
+            str: node config.
+        """
+        name = self._normalize_name(name)
+
+        return self.jenkins._request(
+            'GET',
+            '/computer/{}/config.xml'.format(name)
+        )
