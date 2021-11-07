@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 from requests import Session
 from requests.adapters import HTTPAdapter
@@ -176,6 +176,24 @@ class JenkinsClient(Jenkins):
             self.crumb = self._get_crumb()
 
         return self._http_request(method, path, **kwargs)
+
+    @staticmethod
+    def _chain(functions: List[Callable]) -> Any:
+        """
+        Helper function for creating call chain for functions.
+        """
+        prev = None
+
+        for func in functions:
+            prev = func(prev)
+
+            while True:
+                if callable(prev):
+                    prev = prev()
+                else:
+                    break
+
+        return prev
 
     def close(self) -> None:
         """

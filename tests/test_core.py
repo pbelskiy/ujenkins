@@ -155,7 +155,7 @@ def test_sync_crumb_disabled():
 
 @pytest.mark.skipif(sys.version_info < (3, 6), reason='aiohttp mock problem')
 @pytest.mark.asyncio
-async def test_async_crumb(aiohttp_mock):
+async def test_async_crumb(aiohttp_mock, async_client):
     aiohttp_mock.get(
         re.compile(r'.+/crumbIssuer/api/json'),
         content_type='application/json;charset=utf-8',
@@ -167,9 +167,9 @@ async def test_async_crumb(aiohttp_mock):
         headers={'X-Jenkins': '2.0.129'}
     )
 
-    client = AsyncJenkinsClient('http://server', 'login', 'password')
-    version = await client.system.get_version()
+    async_client.crumb = None
+    version = await async_client.system.get_version()
 
-    assert client.crumb['Jenkins-Crumb'] == \
+    assert async_client.crumb['Jenkins-Crumb'] == \
         '9c427004e7ed327a230436ee3103856d8df1eec7f2964a87d3d95e850974c4cd'
     assert version.major == 2

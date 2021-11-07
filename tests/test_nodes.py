@@ -1,6 +1,9 @@
 import re
 
+import pytest
 import responses
+
+from ujenkins import AsyncJenkinsClient
 
 NODES_JSON = """{
   "_class" : "hudson.model.ComputerSet",
@@ -181,7 +184,7 @@ NODE_CONFIG_XML = r"""<?xml version="1.1" encoding="UTF-8"?>
 def test_get(client):
     responses.add(
         responses.GET,
-        re.compile(r'.*/computer/api/json'),
+        re.compile(r'.+/computer/api/json'),
         content_type='application/json;charset=utf-8',
         body=NODES_JSON,
     )
@@ -194,7 +197,7 @@ def test_get(client):
 def test_get_info(client):
     responses.add(
         responses.GET,
-        re.compile(r'.*/computer/.+/api/json'),
+        re.compile(r'.+/computer/.+/api/json'),
         content_type='application/json;charset=utf-8',
         body=NODE_INFO_JSON,
     )
@@ -207,10 +210,46 @@ def test_get_info(client):
 def test_get_config(client):
     responses.add(
         responses.GET,
-        re.compile(r'.*/computer/.+/config.xml'),
+        re.compile(r'.+/computer/.+/config.xml'),
         content_type='application/xml',
         body=NODE_CONFIG_XML,
     )
 
     response = client.nodes.get_config('buildbot')
     assert '<name>buildbot</name>' in response
+
+
+@pytest.mark.asyncio
+async def test_async_enable(aiohttp_mock, async_client):
+    aiohttp_mock.get(
+        re.compile(r'.+/computer/.+/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=NODE_INFO_JSON,
+    )
+
+    aiohttp_mock.post(
+        re.compile(r'.+/computer/.+/toggleOffline'),
+        content_type='text/plain',
+        body='',
+    )
+
+    await async_client.nodes.enable('master')
+
+
+@responses.activate
+def test_sync_enable(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/computer/.+/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=NODE_INFO_JSON,
+    )
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/computer/.+/toggleOffline'),
+        content_type='text/plain',
+        body='',
+    )
+
+    client.nodes.enable('master')

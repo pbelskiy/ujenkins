@@ -41,7 +41,7 @@ class Jenkins:
         if callback:
             return callback(response)
 
-        if 'application/json' in response.headers.get('Content-Type'):
+        if 'application/json' in response.headers.get('Content-Type', ''):
             return json.loads(response.body)
 
         return response.body

@@ -1,7 +1,7 @@
 import asyncio
 
 from http import HTTPStatus
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 from aiohttp import (
     BasicAuth,
@@ -186,6 +186,31 @@ class AsyncJenkinsClient(Jenkins):
             self.crumb = await self._get_crumb()
 
         return await self._http_request(method, path, **kwargs)
+
+    @staticmethod
+    async def _chain(functions: List[Callable]) -> Any:
+        """
+        Helper function for creating call chain of async and sync functions.
+        """
+        prev = None
+
+        for func in functions:
+            if asyncio.iscoroutinefunction(func):
+                prev = await func(prev)
+            else:
+                prev = func(prev)
+
+            while True:
+                if asyncio.iscoroutinefunction(prev):
+                    prev = await prev()
+                elif asyncio.iscoroutine(prev):
+                    prev = await prev
+                elif callable(prev):
+                    prev = prev()
+                else:
+                    break
+
+        return prev
 
     async def close(self) -> None:  # type: ignore
         """

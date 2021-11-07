@@ -1,6 +1,7 @@
 import json
 
-from typing import Dict
+from functools import partial
+from typing import Any, Dict
 
 
 class Nodes:
@@ -74,3 +75,26 @@ class Nodes:
             'GET',
             '/computer/{}/config.xml'.format(name)
         )
+
+    def enable(self, name: str) -> None:
+        """
+        Enable node.
+
+        Args:
+            name (str): node name.
+
+        Returns:
+            None
+        """
+        name = self._normalize_name(name)
+
+        def callback1(_) -> Any:
+            return partial(self.get_info, name)
+
+        def callback2(response: dict) -> None:
+            if not response['offline']:
+                return None
+
+            return self.jenkins._request('POST', '/computer/{}/toggleOffline'.format(name))
+
+        return self.jenkins._chain([callback1, callback2])
