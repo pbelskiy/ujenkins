@@ -3,8 +3,6 @@ import re
 import pytest
 import responses
 
-from ujenkins import AsyncJenkinsClient
-
 NODES_JSON = """{
   "_class" : "hudson.model.ComputerSet",
   "busyExecutors" : 0,
