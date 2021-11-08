@@ -141,10 +141,7 @@ class AsyncJenkinsClient(Jenkins):
 
         response = await self.session.request(
             method,
-            '{host}{path}'.format(
-                host=self.host,
-                path=path,
-            ),
+            f'{self.host}{path}',
             auth=self.auth,
             ssl=self.verify,
             **kwargs

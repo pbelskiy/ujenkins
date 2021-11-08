@@ -56,7 +56,7 @@ class Nodes:
 
         return self.jenkins._request(
             'GET',
-            '/computer/{}/api/json'.format(name),
+            f'/computer/{name}/api/json',
         )
 
     def get_config(self, name: str) -> str:
@@ -73,7 +73,7 @@ class Nodes:
 
         return self.jenkins._request(
             'GET',
-            '/computer/{}/config.xml'.format(name)
+            f'/computer/{name}/config.xml'
         )
 
     def enable(self, name: str) -> None:
@@ -95,6 +95,6 @@ class Nodes:
             if not response['offline']:
                 return None
 
-            return self.jenkins._request('POST', '/computer/{}/toggleOffline'.format(name))
+            return self.jenkins._request('POST', f'/computer/{name}/toggleOffline')
 
         return self.jenkins._chain([callback1, callback2])

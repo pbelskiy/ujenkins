@@ -33,7 +33,7 @@ class Jenkins:
                 details = '\n' + response.body
 
             raise JenkinsError(
-                'Request error [{}], {}'.format(response.status, details),
+                f'Request error [{response.status}], {details}',
                 status=response.status,
             )
 
@@ -54,7 +54,7 @@ class Jenkins:
         folder_name = ''
 
         for folder in parts[:-1]:
-            folder_name += 'job/{}/'.format(folder)
+            folder_name += f'job/{folder}/'
 
         return folder_name, job_name
 

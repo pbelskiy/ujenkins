@@ -32,10 +32,7 @@ class Builds:
 
         return self.jenkins._request(
             'GET',
-            '/{}/job/{}/api/json?tree=allBuilds[number,url]'.format(
-                folder_name,
-                job_name
-            ),
+            f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[number,url]',
             callback=callback,
         )
 
@@ -54,7 +51,7 @@ class Builds:
 
         return self.jenkins._request(
             'GET',
-            '/{}/job/{}/{}/api/json'.format(folder_name, job_name, build_id)
+            f'/{folder_name}/job/{job_name}/{build_id}/api/json'
         )
 
     def get_output(self, name: str, build_id: int) -> str:
@@ -72,7 +69,7 @@ class Builds:
 
         return self.jenkins._request(
             'GET',
-            '/{}/job/{}/{}/consoleText'.format(folder_name, job_name, build_id)
+            f'/{folder_name}/job/{job_name}/{build_id}/consoleText'
         )
 
     def start(self,
@@ -108,10 +105,7 @@ class Builds:
         data = None
 
         if parameters:
-            path = '/{}/job/{}/buildWithParameters'.format(
-                folder_name,
-                job_name
-            )
+            path = f'/{folder_name}/job/{job_name}/buildWithParameters'
 
             formatted_parameters = [
                 {'name': k, 'value': str(v)} for k, v in parameters.items()
@@ -129,7 +123,7 @@ class Builds:
                 **parameters,
             }
         else:
-            path = '/job/{}/build'.format(name)
+            path = f'/job/{name}/build'
 
         return self.jenkins._request(
             'POST',
@@ -154,7 +148,7 @@ class Builds:
 
         return self.jenkins._request(
             'POST',
-            '/{}/job/{}/{}/stop'.format(folder_name, job_name, build_id)
+            f'/{folder_name}/job/{job_name}/{build_id}/stop'
         )
 
     def delete(self, name: str, build_id: int) -> None:
@@ -172,5 +166,5 @@ class Builds:
 
         return self.jenkins._request(
             'POST',
-            '/{}/job/{}/{}/doDelete'.format(folder_name, job_name, build_id)
+            f'/{folder_name}/job/{job_name}/{build_id}/doDelete'
         )

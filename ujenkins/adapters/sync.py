@@ -133,10 +133,7 @@ class JenkinsClient(Jenkins):
 
         response = self.session.request(
             method,
-            '{host}{path}'.format(
-                host=self.host,
-                path=path,
-            ),
+            f'{self.host}{path}',
             allow_redirects=False,
             verify=self.verify,
             **kwargs
