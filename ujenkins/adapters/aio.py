@@ -192,15 +192,10 @@ class AsyncJenkinsClient(Jenkins):
         prev = None
 
         for func in functions:
-            if asyncio.iscoroutinefunction(func):
-                prev = await func(prev)
-            else:
-                prev = func(prev)
+            prev = func(prev)
 
             while True:
-                if asyncio.iscoroutinefunction(prev):
-                    prev = await prev()
-                elif asyncio.iscoroutine(prev):
+                if asyncio.iscoroutine(prev):
                     prev = await prev
                 elif callable(prev):
                     prev = prev()
