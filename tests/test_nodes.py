@@ -251,3 +251,22 @@ def test_sync_enable(client):
     )
 
     client.nodes.enable('master')
+
+
+@responses.activate
+def test_disable(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/computer/.+/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=NODE_INFO_JSON.replace('"offline" : true,', '"offline" : false,'),
+    )
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/computer/.+/toggleOffline'),
+        content_type='text/plain',
+        body='',
+    )
+
+    client.nodes.disable('master')

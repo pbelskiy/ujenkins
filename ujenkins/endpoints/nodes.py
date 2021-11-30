@@ -1,7 +1,7 @@
 import json
 
 from functools import partial
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 
 class Nodes:
@@ -96,5 +96,36 @@ class Nodes:
                 return None
 
             return self.jenkins._request('POST', f'/computer/{name}/toggleOffline')
+
+        return self.jenkins._chain([callback1, callback2])
+
+    def disable(self, name: str, message: Optional[str] = '') -> None:
+        """
+        Disable node.
+
+        Args:
+            name (str):
+                node name.
+
+            message (Optional[str]):
+                reason message.
+
+        Returns:
+            None
+        """
+        name = self._normalize_name(name)
+
+        def callback1(_) -> Any:
+            return partial(self.get_info, name)
+
+        def callback2(response: dict) -> None:
+            if response['offline']:
+                return None
+
+            return self.jenkins._request(
+                'POST',
+                f'/computer/{name}/toggleOffline',
+                params={'offlineMessage': message},
+            )
 
         return self.jenkins._chain([callback1, callback2])
