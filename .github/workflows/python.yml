@@ -28,10 +28,12 @@ jobs:
 
     - name: Testing with tox
       env:
+        COVERALLS_PARALLEL: true
+        COVERALLS_REPO_TOKEN: ${{ secrets.coveralls }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
       run: |
         tox
-        COVERALLS_REPO_TOKEN=${{ secrets.coveralls }} COVERALLS_PARALLEL=true coveralls
+        coveralls -v --service=github-actions
 
   finish:
     needs: tests
