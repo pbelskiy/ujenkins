@@ -102,11 +102,11 @@ class Builds:
 
         folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
 
+        path = f'/{folder_name}/job/{job_name}'
+
         data = None
 
         if parameters:
-            path = f'/{folder_name}/job/{job_name}/buildWithParameters'
-
             formatted_parameters = [
                 {'name': k, 'value': str(v)} for k, v in parameters.items()
             ]  # type: Any
@@ -122,8 +122,9 @@ class Builds:
                 }),
                 **parameters,
             }
+            path += '/buildWithParameters'
         else:
-            path = f'/job/{name}/build'
+            path += '/build'
 
         return self.jenkins._request(
             'POST',
