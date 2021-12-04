@@ -129,3 +129,25 @@ class Nodes:
             )
 
         return self.jenkins._chain([callback1, callback2])
+
+    def update_offline_reason(self, name: str, message: str) -> None:
+        """
+        Update reason message of disabled node.
+
+        Args:
+            name (str):
+                node name.
+
+            message (str):
+                reason message.
+
+        Returns:
+            None
+        """
+        name = self._normalize_name(name)
+
+        return self.jenkins._request(
+            'POST',
+            '/computer/{}/changeOfflineCause'.format(name),
+            params={'offlineMessage': message}
+        )

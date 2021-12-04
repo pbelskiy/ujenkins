@@ -270,3 +270,13 @@ def test_disable(client):
     )
 
     client.nodes.disable('master')
+
+
+@responses.activate
+def test_update_offline_reason(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/computer/.+/changeOfflineCause'),
+    )
+
+    client.nodes.update_offline_reason('buildbot', 'maintenance')
