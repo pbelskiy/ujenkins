@@ -76,6 +76,24 @@ class Nodes:
             f'/computer/{name}/config.xml'
         )
 
+    def delete(self, name: str) -> None:
+        """
+        Delete node.
+
+        Args:
+            name (str):
+            node name.
+
+        Returns:
+            None
+        """
+        name = self._normalize_name(name)
+
+        return self.jenkins._request(
+            'POST',
+            f'/computer/{name}/doDelete'
+        )
+
     def enable(self, name: str) -> None:
         """
         Enable node.

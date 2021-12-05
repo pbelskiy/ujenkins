@@ -217,6 +217,16 @@ def test_get_config(client):
     assert '<name>buildbot</name>' in response
 
 
+@responses.activate
+def test_delete(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/computer/.+/doDelete'),
+    )
+
+    client.nodes.delete('buildbot')
+
+
 @pytest.mark.asyncio
 async def test_async_enable(aiohttp_mock, async_client):
     aiohttp_mock.get(
