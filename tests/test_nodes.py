@@ -218,6 +218,17 @@ def test_get_config(client):
 
 
 @responses.activate
+def test_is_exists(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/computer/.+/api/json'),
+        status=404,
+    )
+
+    client.nodes.is_exists('master')
+
+
+@responses.activate
 def test_delete(client):
     responses.add(
         responses.POST,

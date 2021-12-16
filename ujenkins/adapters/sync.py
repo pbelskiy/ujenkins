@@ -182,13 +182,18 @@ class JenkinsClient(Jenkins):
         prev = None
 
         for func in functions:
-            prev = func(prev)
+            try:
+                prev = func(prev)
 
-            while True:
-                if callable(prev):
-                    prev = prev()
-                else:
-                    break
+                while True:
+                    if callable(prev):
+                        prev = prev()
+                    else:
+                        break
+            except JenkinsError as e:
+                # print('@here', type(e), e)
+                prev = e
+                continue
 
         return prev
 

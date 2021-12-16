@@ -3,6 +3,8 @@ import json
 from functools import partial
 from typing import Any, Dict, Optional
 
+from ujenkins.exceptions import JenkinsNotFoundError
+
 
 class Nodes:
 
@@ -75,6 +77,31 @@ class Nodes:
             'GET',
             f'/computer/{name}/config.xml'
         )
+
+    def is_exists(self, name: str) -> bool:
+        """
+        Check is node exist.
+
+        Args:
+            name (str):
+                node name.
+
+        Returns:
+            bool: node existing.
+        """
+        if name == '':
+            return False
+
+        def callback1(_) -> Any:
+            return partial(self.get_info, name)
+
+        def callback2(response: Any) -> bool:
+            if isinstance(response, JenkinsNotFoundError):
+                return False
+
+            return True
+
+        return self.jenkins._chain([callback1, callback2])
 
     def delete(self, name: str) -> None:
         """

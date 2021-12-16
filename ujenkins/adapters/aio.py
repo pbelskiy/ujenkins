@@ -192,15 +192,18 @@ class AsyncJenkinsClient(Jenkins):
         prev = None
 
         for func in functions:
-            prev = func(prev)
+            try:
+                prev = func(prev)
 
-            while True:
-                if asyncio.iscoroutine(prev):
-                    prev = await prev
-                elif callable(prev):
-                    prev = prev()
-                else:
-                    break
+                while True:
+                    if asyncio.iscoroutine(prev):
+                        prev = await prev
+                    elif callable(prev):
+                        prev = prev()
+                    else:
+                        break
+            except JenkinsError as e:
+                prev = e
 
         return prev
 
