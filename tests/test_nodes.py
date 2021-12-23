@@ -229,6 +229,23 @@ def test_is_exists(client):
 
 
 @responses.activate
+def test_create(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/computer/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=NODES_JSON,
+    )
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/computer/doCreateItem'),
+    )
+
+    client.nodes.create('buildbot', {})
+
+
+@responses.activate
 def test_delete(client):
     responses.add(
         responses.POST,

@@ -3,7 +3,7 @@ import json
 from functools import partial
 from typing import Any, Dict, Optional
 
-from ujenkins.exceptions import JenkinsNotFoundError
+from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
 
 class Nodes:
@@ -100,6 +100,50 @@ class Nodes:
                 return False
 
             return True
+
+        return self.jenkins._chain([callback1, callback2])
+
+    def create(self, name: str, config: dict) -> None:
+        """
+        Create new node.
+
+        Args:
+            name (str):
+                Node name.
+
+            config (str):
+                XML config for new node.
+
+        Returns:
+            None
+
+        Raises:
+            JenkinsError: in case node already exists.
+        """
+        def callback1(_) -> Any:
+            return partial(self.get)
+
+        def callback2(response: Any) -> bool:
+            # if not check, then we get 400 error with unclear stacktrace
+            if name in response:
+                raise JenkinsError(f'Node `{name}` is already exists')
+
+            if 'type' not in config:
+                config['type'] = 'hudson.slaves.DumbSlave'
+
+            config['name'] = name
+
+            params = {
+                'name': name,
+                'type': config['type'],
+                'json': json.dumps(config)
+            }
+
+            return self.jenkins._request(
+                'POST',
+                '/computer/doCreateItem',
+                params=params,
+            )
 
         return self.jenkins._chain([callback1, callback2])
 
