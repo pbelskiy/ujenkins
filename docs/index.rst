@@ -33,6 +33,12 @@ System
 .. autoclass:: ujenkins.endpoints.system.System
     :members:
 
+Helpers
+~~~~~~~
+
+.. automodule:: ujenkins.helpers
+    :members:
+
 Exceptions
 ~~~~~~~~~~
 
