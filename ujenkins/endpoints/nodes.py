@@ -165,6 +165,32 @@ class Nodes:
             f'/computer/{name}/doDelete'
         )
 
+    def reconfigure(self, name: str, config: str) -> None:
+        """
+        Reconfigure node.
+
+        Args:
+            name (str):
+                Node name.
+
+            config (str):
+                New XML config for node.
+
+        Returns:
+            None
+        """
+        name = self._normalize_name(name)
+
+        if name == '(master)':
+            raise JenkinsError('Cannot reconfigure master node')
+
+        return self.jenkins._request(
+            'POST',
+            '/computer/{}/config.xml'.format(name),
+            data=config,
+            headers={'Content-Type': 'text/xml'},
+        )
+
     def enable(self, name: str) -> None:
         """
         Enable node.

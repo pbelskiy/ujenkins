@@ -3,6 +3,8 @@ import re
 import pytest
 import responses
 
+from ujenkins.exceptions import JenkinsError
+
 NODES_JSON = """{
   "_class" : "hudson.model.ComputerSet",
   "busyExecutors" : 0,
@@ -253,6 +255,19 @@ def test_delete(client):
     )
 
     client.nodes.delete('buildbot')
+
+
+@responses.activate
+def test_reconfigure(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/computer/.+/config.xml'),
+    )
+
+    client.nodes.reconfigure('buildbot', NODE_CONFIG_XML)
+
+    with pytest.raises(JenkinsError):
+        client.nodes.reconfigure('(master)', NODE_CONFIG_XML)
 
 
 @pytest.mark.asyncio
