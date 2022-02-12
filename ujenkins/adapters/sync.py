@@ -191,9 +191,7 @@ class JenkinsClient(Jenkins):
                     else:
                         break
             except JenkinsError as e:
-                # print('@here', type(e), e)
                 prev = e
-                continue
 
         return prev
 
