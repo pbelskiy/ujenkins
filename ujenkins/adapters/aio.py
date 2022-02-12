@@ -197,7 +197,7 @@ class AsyncJenkinsClient(Jenkins):
 
                 while True:
                     if asyncio.iscoroutine(prev):
-                        prev = await prev
+                        prev = await prev  # type: ignore
                     elif callable(prev):
                         prev = prev()
                     else:
