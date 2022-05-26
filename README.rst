@@ -35,8 +35,8 @@ Installation
 
     pip3 install -U ujenkins
 
-Comparison to other libraries
------------------------------
+Comparison to other packages
+----------------------------
 
 +-------------------+-------+-------+
 | Name              | sync  | async |
@@ -58,7 +58,7 @@ Comparison to other libraries
 Usage
 -----
 
-Main advantage of this library is that same API interfaces used for sync
+Main advantage of this package is that same API interfaces used for sync
 and async syntax.
 
 Get Jenkins version using sync client:
