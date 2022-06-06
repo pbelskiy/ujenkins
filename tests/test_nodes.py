@@ -159,7 +159,7 @@ NODE_INFO_JSON = """{
 }
 """
 
-RSS_FAILED_XML = r"""<?xml version="1.0" encoding="UTF-8"?>
+RSS_BUILDS_FAILED_XML = r"""<?xml version="1.0" encoding="UTF-8"?>
 
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>Jenkins:master (failed builds)</title>
@@ -175,6 +175,40 @@ RSS_FAILED_XML = r"""<?xml version="1.0" encoding="UTF-8"?>
         <id>tag:hudson.dev.java.net,2022:jobbb:15</id>
         <published>2022-06-06T21:14:09Z</published>
         <updated>2022-06-06T21:14:09Z</updated>
+    </entry>
+</feed>
+"""
+
+RSS_BUILDS_ALL_XML = r"""<?xml version="1.0" encoding="UTF-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Jenkins:master (all builds)</title>
+    <link rel="alternate" type="text/html" href="http://localhost:8080/computer/(master)/"></link>
+    <updated>2022-06-06T21:14:09Z</updated>
+    <author>
+        <name>Jenkins Server</name>
+    </author>
+    <id>urn:uuid:903deee0-7bfa-11db-9fe1-0800200c9a66</id>
+    <entry>
+        <title>jobbb #15 (broken since this build)</title>
+        <link rel="alternate" type="text/html" href="http://localhost:8080/job/jobbb/15/"></link>
+        <id>tag:hudson.dev.java.net,2022:jobbb:15</id>
+        <published>2022-06-06T21:14:09Z</published>
+        <updated>2022-06-06T21:14:09Z</updated>
+    </entry>
+    <entry>
+        <title>jobbb #14 (stable)</title>
+        <link rel="alternate" type="text/html" href="http://localhost:8080/job/jobbb/14/"></link>
+        <id>tag:hudson.dev.java.net,2021:jobbb:14</id>
+        <published>2021-08-10T21:02:55Z</published>
+        <updated>2021-08-10T21:02:55Z</updated>
+    </entry>
+    <entry>
+        <title>jobbb #13 (stable)</title>
+        <link rel="alternate" type="text/html" href="http://localhost:8080/job/jobbb/13/"></link>
+        <id>tag:hudson.dev.java.net,2021:jobbb:13</id>
+        <published>2021-08-10T21:02:06Z</published>
+        <updated>2021-08-10T21:02:06Z</updated>
     </entry>
 </feed>
 """
@@ -219,7 +253,7 @@ def test_get_failed_builds(client):
         responses.GET,
         re.compile(r'.+/computer/.+/rssFailed'),
         content_type='application/atom+xml;charset=UTF-8',
-        body=RSS_FAILED_XML,
+        body=RSS_BUILDS_FAILED_XML,
     )
 
     response = client.nodes.get_failed_builds('master')
@@ -227,6 +261,19 @@ def test_get_failed_builds(client):
     assert response[0]['url'] == 'http://localhost:8080/job/jobbb/15/'
     assert response[0]['job_name'] == 'jobbb'
     assert response[0]['number'] == 15
+
+
+@responses.activate
+def test_get_all_builds(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/computer/.+/rssAll'),
+        content_type='application/atom+xml;charset=UTF-8',
+        body=RSS_BUILDS_ALL_XML,
+    )
+
+    response = client.nodes.get_all_builds('master')
+    assert len(response) == 3
 
 
 @responses.activate

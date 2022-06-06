@@ -99,6 +99,40 @@ class Nodes:
             callback=callback
         )
 
+    def get_all_builds(self, name: str) -> List[dict]:
+        """
+        Return list of all detalizied builds for node name, actually it parsed
+        from RSS feed. Ascending builds sort.
+
+        Example:
+
+        .. code-block:: python
+
+            response = [{
+                'job_name': 'test',
+                'number': 1,
+                'url': 'http://localhost:8080/job/test/1/'
+            }]
+
+        Args:
+            name (str):
+                Node name.
+
+        Returns:
+            List[dict]: list of all builds for specified node.
+
+        """
+        def callback(response) -> List[dict]:
+            return _parse_rss(response.body)
+
+        name = self._normalize_name(name)
+
+        return self.jenkins._request(
+            'GET',
+            '/computer/{}/rssAll'.format(name),
+            callback=callback
+        )
+
     def get_info(self, name: str) -> dict:
         """
         Get node detailed information.
