@@ -1,11 +1,6 @@
 Universal Python client for `Jenkins <http://jenkins.io>`_
 ==========================================================
 
-Python client for jenkins which supports both synс and async syntax with same API interfaces.
-
-Status
-------
-
 |Build status|
 |Docs status|
 |Coverage status|
@@ -23,6 +18,10 @@ Status
 .. |Downloads status|
    image:: https://img.shields.io/pypi/dm/ujenkins?color=1&label=Downloads
 
+----
+
+Python client for jenkins which supports both synс and async syntax with same API interfaces.
+
 Documentation
 -------------
 
@@ -33,7 +32,7 @@ Installation
 
 ::
 
-    pip3 install -U ujenkins
+    pip3 install ujenkins
 
 Comparison to other packages
 ----------------------------
