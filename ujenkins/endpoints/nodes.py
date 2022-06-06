@@ -1,9 +1,31 @@
 import json
+import xml.etree.ElementTree
 
 from functools import partial
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
+from ujenkins.helpers import parse_build_url
+
+
+def _parse_rss(rss: str) -> List[dict]:
+    builds = []
+    ns = {'atom': 'http://www.w3.org/2005/Atom'}
+
+    root = xml.etree.ElementTree.fromstring(rss)
+    for entry in root.findall('atom:entry', ns):
+        link = entry.find('atom:link', ns)
+        if link is not None:
+            build_url = link.attrib['href']
+            job_name, build_id = parse_build_url(build_url)
+
+            builds.append({
+                'url': build_url,
+                'job_name': job_name,
+                'number': build_id,
+            })
+
+    return list(reversed(builds))
 
 
 class Nodes:
@@ -26,7 +48,7 @@ class Nodes:
 
         .. code-block:: python
 
-            {
+            response = {
                 "master": dict(...),
                 "buildbot1": dict(...)
             }
@@ -42,6 +64,39 @@ class Nodes:
             'GET',
             '/computer/api/json',
             callback=callback,
+        )
+
+    def get_failed_builds(self, name: str) -> List[dict]:
+        """
+        Return list of detalizied failed builds for node name. Actually it
+        parsed from RSS feed. usefull for build restart. Ascending builds sort.
+
+        Example:
+
+        .. code-block:: python
+
+            response = [{
+                'job_name': 'test',
+                'number': 1,
+                'url': 'http://localhost:8080/job/test/1/'
+            }]
+
+        Args:
+            name (str):
+                Node name.
+
+        Returns:
+            List[dict]: builds and their information.
+        """
+        def callback(response) -> List[dict]:
+            return _parse_rss(response.body)
+
+        name = self._normalize_name(name)
+
+        return self.jenkins._request(
+            'GET',
+            f'/computer/{name}/rssFailed',
+            callback=callback
         )
 
     def get_info(self, name: str) -> dict:
@@ -153,7 +208,7 @@ class Nodes:
 
         Args:
             name (str):
-            node name.
+                Node name.
 
         Returns:
             None
@@ -196,7 +251,8 @@ class Nodes:
         Enable node.
 
         Args:
-            name (str): node name.
+            name (str):
+                Node name.
 
         Returns:
             None
@@ -220,10 +276,10 @@ class Nodes:
 
         Args:
             name (str):
-                node name.
+                Node name.
 
             message (Optional[str]):
-                reason message.
+                Reason message.
 
         Returns:
             None
@@ -251,10 +307,10 @@ class Nodes:
 
         Args:
             name (str):
-                node name.
+                Node name.
 
             message (str):
-                reason message.
+                Reason message.
 
         Returns:
             None

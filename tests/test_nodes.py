@@ -159,6 +159,26 @@ NODE_INFO_JSON = """{
 }
 """
 
+RSS_FAILED_XML = r"""<?xml version="1.0" encoding="UTF-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Jenkins:master (failed builds)</title>
+    <link rel="alternate" type="text/html" href="http://localhost:8080/computer/(master)/"></link>
+    <updated>2022-06-06T21:14:09Z</updated>
+    <author>
+        <name>Jenkins Server</name>
+    </author>
+    <id>urn:uuid:903deee0-7bfa-11db-9fe1-0800200c9a66</id>
+    <entry>
+        <title>jobbb #15 (broken since this build)</title>
+        <link rel="alternate" type="text/html" href="http://localhost:8080/job/jobbb/15/"></link>
+        <id>tag:hudson.dev.java.net,2022:jobbb:15</id>
+        <published>2022-06-06T21:14:09Z</published>
+        <updated>2022-06-06T21:14:09Z</updated>
+    </entry>
+</feed>
+"""
+
 NODE_CONFIG_XML = r"""<?xml version="1.1" encoding="UTF-8"?>
 <slave>
   <name>buildbot</name>
@@ -191,6 +211,22 @@ def test_get(client):
 
     response = client.nodes.get()
     assert len(response) == 1
+
+
+@responses.activate
+def test_get_failed_builds(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/computer/.+/rssFailed'),
+        content_type='application/atom+xml;charset=UTF-8',
+        body=RSS_FAILED_XML,
+    )
+
+    response = client.nodes.get_failed_builds('master')
+    assert len(response) == 1
+    assert response[0]['url'] == 'http://localhost:8080/job/jobbb/15/'
+    assert response[0]['job_name'] == 'jobbb'
+    assert response[0]['number'] == 15
 
 
 @responses.activate
