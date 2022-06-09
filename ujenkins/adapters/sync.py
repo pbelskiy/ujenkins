@@ -134,7 +134,6 @@ class JenkinsClient(Jenkins):
         response = self.session.request(
             method,
             f'{self.host}{path}',
-            allow_redirects=False,
             verify=self.verify,
             **kwargs
         )
