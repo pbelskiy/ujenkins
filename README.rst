@@ -30,9 +30,17 @@ Documentation
 Installation
 ------------
 
-::
+Latest release from PyPI
+
+.. code:: shell
 
     pip3 install ujenkins
+
+Or latest developing version
+
+.. code:: shell
+
+    pip3 install git+https://github.com/pbelskiy/ujenkins
 
 Comparison to other packages
 ----------------------------
