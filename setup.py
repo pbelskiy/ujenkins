@@ -32,7 +32,7 @@ setup_args = dict(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
     ],
-    # license='',
+    license='MIT',
     packages=find_packages(),
     package_data={'ujenkins': ['*']},
     author='Petr Belskiy',
