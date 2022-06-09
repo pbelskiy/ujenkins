@@ -22,28 +22,8 @@ Universal Python client for `Jenkins <http://jenkins.io>`_
 
 Python client for jenkins which supports both synс and async syntax with same API interfaces.
 
-Documentation
--------------
-
-`Read the Docs <https://ujenkins.readthedocs.io/en/latest/>`_
-
-Installation
-------------
-
-Latest release from PyPI
-
-.. code:: shell
-
-    pip3 install ujenkins
-
-Or latest developing version
-
-.. code:: shell
-
-    pip3 install git+https://github.com/pbelskiy/ujenkins
 
 Comparison to other packages
-----------------------------
 
 +-------------------+-------+-------+
 | Name              | sync  | async |
@@ -61,6 +41,21 @@ Comparison to other packages
 .. _aiojenkins: https://pypi.org/project/aiojenkins/
 .. _python-jenkins: https://pypi.org/project/python-jenkins/
 .. _jenkinsapi: https://pypi.org/project/jenkinsapi/
+
+Installation
+------------
+
+Latest release from PyPI
+
+.. code:: shell
+
+    pip3 install ujenkins
+
+Or latest developing version
+
+.. code:: shell
+
+    pip3 install git+https://github.com/pbelskiy/ujenkins
 
 Usage
 -----
@@ -96,6 +91,11 @@ With async client:
     asyncio.run(example())
 
 `Please look at tests directory for more examples. <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
+
+Documentation
+-------------
+
+`Read the Docs <https://ujenkins.readthedocs.io/en/latest/>`_
 
 Testing
 -------
