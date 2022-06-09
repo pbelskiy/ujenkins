@@ -22,9 +22,8 @@ Universal Python client for `Jenkins <http://jenkins.io>`_
 
 Python client for jenkins which supports both synс and async syntax with same API interfaces.
 
-
-Comparison to other packages
-
++-----------------------------------+
+|   Comparison to other packages    |
 +-------------------+-------+-------+
 | Name              | sync  | async |
 +===================+=======+=======+
