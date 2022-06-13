@@ -35,7 +35,13 @@ class System:
             if not header:
                 raise JenkinsError('Header `X-Jenkins` isn`t found in response')
 
-            return JenkinsVersion(*map(int, header.split('.')))
+            versions = header.split('.')
+
+            # no patch version
+            if len(versions) == 2:
+                versions.append('0')
+
+            return JenkinsVersion(*map(int, versions))
 
         return self.jenkins._request('GET', '/', callback=callback)
 

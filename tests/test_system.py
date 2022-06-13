@@ -97,6 +97,17 @@ def test_get_version(client):
     assert version.minor == 0
     assert version.patch == 129
 
+    responses.add(
+        responses.GET,
+        re.compile(r'.+/'),
+        headers={'X-Jenkins': '2.123'}
+    )
+
+    version = client.system.get_version()
+    assert version.major == 2
+    assert version.minor == 123
+    assert version.patch == 0
+
 
 @responses.activate
 def test_is_ready(client):
