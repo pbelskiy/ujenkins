@@ -8,14 +8,14 @@ init_file_path = os.path.join(
     'ujenkins/__init__.py'
 )
 
-with open(init_file_path) as f:
+with open(init_file_path, encoding='utf-8') as f:
     try:
         version = re.findall(r"__version__ = '(.*)'", f.read())[0]
     except IndexError:
         raise RuntimeError('Unable to get package version')
 
-with open('README.rst') as readme_file:
-    README = readme_file.read()
+with open('README.rst', encoding='utf-8') as f:
+    README = f.read()
 
 setup_args = dict(
     name='ujenkins',
