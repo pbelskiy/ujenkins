@@ -38,8 +38,8 @@ Python client for jenkins which supports both synс and async syntax with same A
 
 .. _ujenkins: https://github.com/pbelskiy/ujenkins
 .. _aiojenkins: https://github.com/pbelskiy/aiojenkins
-.. _python-jenkins: https://github.com/pycontribs/jenkinsapi
-.. _jenkinsapi: https://opendev.org/jjb/python-jenkins
+.. _python-jenkins: https://opendev.org/jjb/python-jenkins
+.. _jenkinsapi: https://github.com/pycontribs/jenkinsapi
 
 Installation
 ------------
