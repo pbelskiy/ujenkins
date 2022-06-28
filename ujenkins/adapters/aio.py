@@ -66,7 +66,7 @@ class AsyncJenkinsClient(Jenkins):
                 URL of Jenkins server.
 
             user (Optional[str]):
-                User name, login.
+                User name.
 
             password (Optional[str]):
                 Password for user.

@@ -27,7 +27,7 @@ def test_sync_client_retry():
 
     client = JenkinsClient(
         'http://server',
-        'login',
+        'user',
         'password',
         retry=dict(
             total=10,
@@ -43,7 +43,7 @@ def test_sync_client_retry():
 async def test_async_client_retry(aiohttp_mock):
     client = AsyncJenkinsClient(
         'http://server',
-        'login',
+        'user',
         'password',
         retry=dict(
             total=10,
@@ -77,7 +77,7 @@ async def test_async_client_retry(aiohttp_mock):
 async def test_async_client_retry_exception(aiohttp_mock):
     client = AsyncJenkinsClient(
         'http://server',
-        'login',
+        'user',
         'password',
         retry=dict(
             total=2,
