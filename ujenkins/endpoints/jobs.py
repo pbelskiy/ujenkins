@@ -10,24 +10,21 @@ class Jobs:
 
     def _get_all_jobs(self, url: str, parent: str) -> Dict[str, dict]:
 
-        def callback(response) -> dict:
+        def callback(response):
             all_jobs = {}
 
             jobs = json.loads(response.body)['jobs']
-
             for job in jobs:
                 all_jobs[parent + job['name']] = job
 
-                # TODO: async adapter recursive calls
-                # if 'Folder' in job.get('_class', ''):
-                #     all_jobs.update(await self._get_all_jobs(
-                #         job['url'],
-                #         parent + job['name'] + '/'
-                #     ))
-
             return all_jobs
 
-        return self.jenkins._request('GET', url + '/api/json', callback=callback)
+        return self.jenkins._request(
+            'GET',
+            url + '/api/json',
+            params=dict(tree='jobs'),
+            callback=callback,
+        )
 
     def get(self) -> Dict[str, dict]:
         """
