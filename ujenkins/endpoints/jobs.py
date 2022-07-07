@@ -49,3 +49,23 @@ class Jobs:
             Dict[str, dict]: name and job properties.
         """
         return self._get_all_jobs('', '')
+
+    def get_info(self, name: str) -> dict:
+        """
+        Get detailed information of specified job.
+
+        Args:
+            name (str):
+                Job name.
+
+        Returns:
+            dict: job information.
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        response = self.jenkins._request(
+            'GET',
+            f'/{folder_name}/job/{job_name}/api/json'
+        )
+
+        return response

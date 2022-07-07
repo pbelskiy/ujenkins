@@ -59,6 +59,114 @@ JOBS_ALL_JSON = """{
 }
 """
 
+JOB_INFO_JSON = """
+{
+  "_class" : "hudson.model.FreeStyleProject",
+  "actions" : [
+    {
+
+    },
+    {
+
+    }
+  ],
+  "description" : "",
+  "displayName" : "test",
+  "displayNameOrNull" : null,
+  "fullDisplayName" : "test",
+  "fullName" : "test",
+  "name" : "test",
+  "url" : "http://localhost:8080/job/test/",
+  "buildable" : true,
+  "builds" : [
+    {
+      "_class" : "hudson.model.FreeStyleBuild",
+      "number" : 15,
+      "url" : "http://localhost:8080/job/test/15/"
+    },
+    {
+      "_class" : "hudson.model.FreeStyleBuild",
+      "number" : 14,
+      "url" : "http://localhost:8080/job/test/14/"
+    },
+    {
+      "_class" : "hudson.model.FreeStyleBuild",
+      "number" : 13,
+      "url" : "http://localhost:8080/job/test/13/"
+    },
+    {
+      "_class" : "hudson.model.FreeStyleBuild",
+      "number" : 12,
+      "url" : "http://localhost:8080/job/test/12/"
+    }
+  ],
+  "color" : "red",
+  "firstBuild" : {
+    "_class" : "hudson.model.FreeStyleBuild",
+    "number" : 1,
+    "url" : "http://localhost:8080/job/test/1/"
+  },
+  "healthReport" : [
+    {
+      "description" : "Build stability: 1 out of the last 5 builds failed.",
+      "iconClassName" : "icon-health-60to79",
+      "iconUrl" : "health-60to79.png",
+      "score" : 80
+    }
+  ],
+  "inQueue" : false,
+  "keepDependencies" : false,
+  "lastBuild" : {
+    "_class" : "hudson.model.FreeStyleBuild",
+    "number" : 15,
+    "url" : "http://localhost:8080/job/test/15/"
+  },
+  "lastCompletedBuild" : {
+    "_class" : "hudson.model.FreeStyleBuild",
+    "number" : 15,
+    "url" : "http://localhost:8080/job/test/15/"
+  },
+  "lastFailedBuild" : {
+    "_class" : "hudson.model.FreeStyleBuild",
+    "number" : 15,
+    "url" : "http://localhost:8080/job/test/15/"
+  },
+  "lastStableBuild" : {
+    "_class" : "hudson.model.FreeStyleBuild",
+    "number" : 14,
+    "url" : "http://localhost:8080/job/test/14/"
+  },
+  "lastSuccessfulBuild" : {
+    "_class" : "hudson.model.FreeStyleBuild",
+    "number" : 14,
+    "url" : "http://localhost:8080/job/test/14/"
+  },
+  "lastUnstableBuild" : null,
+  "lastUnsuccessfulBuild" : {
+    "_class" : "hudson.model.FreeStyleBuild",
+    "number" : 15,
+    "url" : "http://localhost:8080/job/test/15/"
+  },
+  "nextBuildNumber" : 16,
+  "property" : [
+
+  ],
+  "queueItem" : null,
+  "concurrentBuild" : false,
+  "disabled" : false,
+  "downstreamProjects" : [
+
+  ],
+  "labelExpression" : null,
+  "scm" : {
+    "_class" : "hudson.scm.NullSCM"
+  },
+  "upstreamProjects" : [
+
+  ]
+}
+"""
+
 
 @responses.activate
 def test_get(client):
@@ -72,3 +180,17 @@ def test_get(client):
     assert len(response) == 2
     assert 'test' in response
     # assert response[0]['name'] == 'test'
+
+
+@responses.activate
+def test_get_info(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/test/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=JOB_INFO_JSON,
+    )
+
+    response = client.jobs.get_info('test')
+    assert len(response['builds']) == 4
+    assert response['buildable'] is True
