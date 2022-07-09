@@ -167,6 +167,24 @@ JOB_INFO_JSON = """
 }
 """
 
+JOB_CONFIG_XML = """
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders/>
+  <publishers/>
+  <buildWrappers/>
+</project>
+"""
 
 @responses.activate
 def test_get(client):
@@ -194,3 +212,16 @@ def test_get_info(client):
     response = client.jobs.get_info('test')
     assert len(response['builds']) == 4
     assert response['buildable'] is True
+
+
+@responses.activate
+def test_get_config(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/test/config.xml'),
+        content_type='application/xml',
+        body=JOB_CONFIG_XML,
+    )
+
+    response = client.jobs.get_config('test')
+    assert '<description></description>' in response

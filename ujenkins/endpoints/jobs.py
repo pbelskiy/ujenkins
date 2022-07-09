@@ -63,9 +63,25 @@ class Jobs:
         """
         folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
 
-        response = self.jenkins._request(
+        return self.jenkins._request(
             'GET',
             f'/{folder_name}/job/{job_name}/api/json'
         )
 
-        return response
+    def get_config(self, name: str) -> str:
+        """
+        Get XML config of a specified job.
+
+        Args:
+            name (str):
+                Job name.
+
+        Returns:
+            str: XML config
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        return self.jenkins._request(
+            'GET',
+            f'/{folder_name}/job/{job_name}/config.xml'
+        )
