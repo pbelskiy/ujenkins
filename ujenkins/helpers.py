@@ -1,6 +1,6 @@
 import re
 
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 from xml.dom import minidom
 from xml.etree.ElementTree import Element, SubElement, tostring
 
@@ -28,16 +28,20 @@ def _construct_parameters_block(parent, parameters: List[dict]) -> None:
 
 
 def construct_job_config(*,
-                         description: str = None,
-                         parameters: List[dict] = None,
-                         commands: List[str] = None
+                         description: Optional[str] = None,
+                         parameters: Optional[List[dict]] = None,
+                         commands: Optional[List[str]] = None
                          ) -> str:
     """
     Constructs an XML for job creating depends on arguments.
 
     Args:
-        - description: Job description
-        - parameters: Parameters for job, note that name is mandatory field.
+        description (Optional[str]):
+            Job description.
+
+        parameters (Optional[List[dict]]):
+
+            Parameters for job, note that name is mandatory field.
 
             Example:
 
@@ -49,9 +53,9 @@ def construct_job_config(*,
                     dict(name='param3', default='default command value'),
                 ]
 
-        - commands: List of commands which will be joined as one string by note
-                    that entire command block will run in one shell instance.
-
+        commands (Optional[List[str]]):
+            List of commands which will be joined as one string by note that
+            entire command block will run in one shell instance.
 
             Example:
 
@@ -63,7 +67,7 @@ def construct_job_config(*,
                 ]
 
     Returns:
-        - str: Prettified XML ready to submit on Jenkins
+        str: Prettified XML ready to submit on Jenkins.
     """
     root = Element('project')
 
@@ -103,19 +107,24 @@ def construct_job_config(*,
 
 def construct_node_config(*,
                           name: str,
-                          remote_fs: str = '/tmp',
-                          executors: int = 2
+                          remote_fs: Optional[str] = '/tmp',
+                          executors: Optional[int] = 2
                           ) -> dict:
     """
     Construct node config.
 
     Args:
-        - name: Node name
-        - remote_fs: Remote node root directory
-        - executors: Number of node executors
+        name (str):
+            Node name.
+
+        remote_fs (str):
+            Remote node root directory.
+
+        executors (Optional[int]):
+            Number of node executors
 
     Returns:
-        - dict: return ready to use dict with nodes.create()
+        dict: return ready to use dict with nodes.create()
     """
     return {
         'name': name,
@@ -137,7 +146,14 @@ def construct_node_config(*,
 
 def parse_build_url(build_url: str) -> Tuple[str, int]:
     """
-    Extract job name and build number from build url
+    Extract job name and build number from build url.
+
+    Args:
+        build_url (str):
+            URL to build.
+
+    Returns:
+        Tuple[str, int]: job name and build number.
     """
     match = JOB_BUILD_URL_RE.search(build_url)
     if not match:
