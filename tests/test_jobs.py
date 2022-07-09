@@ -1,5 +1,7 @@
 import re
 
+from http import HTTPStatus
+
 import responses
 
 JOBS_ALL_JSON = """{
@@ -225,3 +227,22 @@ def test_get_config(client):
 
     response = client.jobs.get_config('test')
     assert '<description></description>' in response
+
+
+@responses.activate
+def test_is_exists(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/test/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=JOB_INFO_JSON,
+    )
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/another_job/api/json'),
+        status=HTTPStatus.NOT_FOUND,
+    )
+
+    assert client.jobs.is_exists('test') is True
+    assert client.jobs.is_exists('another_job') is False

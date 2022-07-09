@@ -1,6 +1,9 @@
 import json
 
-from typing import Dict
+from functools import partial
+from typing import Any, Dict
+
+from ujenkins.exceptions import JenkinsNotFoundError
 
 
 class Jobs:
@@ -85,3 +88,28 @@ class Jobs:
             'GET',
             f'/{folder_name}/job/{job_name}/config.xml'
         )
+
+    def is_exists(self, name: str) -> bool:
+        """
+        Checks if the job exists.
+
+        Args:
+            name (str):
+                Job name.
+
+        Returns:
+            bool: job exists.
+        """
+        if name == '':
+            return False
+
+        def callback1(_) -> Any:
+            return partial(self.get_info, name)
+
+        def callback2(response: Any) -> bool:
+            if isinstance(response, JenkinsNotFoundError):
+                return False
+
+            return True
+
+        return self.jenkins._chain([callback1, callback2])
