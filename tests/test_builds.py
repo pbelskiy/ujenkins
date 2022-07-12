@@ -5,7 +5,11 @@ import responses
 BUILDS_ALL_JSON = """{
     "_class": "hudson.model.FreeStyleProject",
     "allBuilds": [
-        {"_class": "hudson.model.FreeStyleBuild", "number": 1, "url": "http://localhost:8080/job/jobbb/1/"}
+        {
+            "_class": "hudson.model.FreeStyleBuild",
+            "number": 1,
+            "url": "http://localhost:8080/job/jobbb/1/"
+        }
     ]
 }
 """

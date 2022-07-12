@@ -1,0 +1,7 @@
+aioresponses
+pytest
+pytest-asyncio
+pytest-cov
+pytest-mypy
+responses
+types-requests
