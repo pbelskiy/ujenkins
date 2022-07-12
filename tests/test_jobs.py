@@ -188,6 +188,7 @@ JOB_CONFIG_XML = """
 </project>
 """
 
+
 @responses.activate
 def test_get(client):
     responses.add(
@@ -246,3 +247,13 @@ def test_is_exists(client):
 
     assert client.jobs.is_exists('test') is True
     assert client.jobs.is_exists('another_job') is False
+
+
+@responses.activate
+def test_create(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/createItem'),
+    )
+
+    client.jobs.create('some_job', JOB_CONFIG_XML)

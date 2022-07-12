@@ -113,3 +113,32 @@ class Jobs:
             return True
 
         return self.jenkins._chain([callback1, callback2])
+
+    def create(self, name: str, config: str) -> None:
+        """
+        Create new jenkins job.
+
+        Args:
+            name (str):
+                Job name.
+
+            config (str):
+                XML config of new job. It`s convenient way to use `get_config()`
+                to get existing job config and change it on your taste, or to
+                use `construct_config()` method.
+
+        Returns:
+            None
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        headers = {'Content-Type': 'text/xml'}
+        params = {'name': job_name}
+
+        return self.jenkins._request(
+            'POST',
+            '/{}/createItem'.format(folder_name),
+            params=params,
+            data=config,
+            headers=headers
+        )
