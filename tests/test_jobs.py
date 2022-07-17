@@ -257,3 +257,13 @@ def test_create(client):
     )
 
     client.jobs.create('some_job', JOB_CONFIG_XML)
+
+
+@responses.activate
+def test_reconfigure(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/some_job/config.xml'),
+    )
+
+    client.jobs.reconfigure('some_job', JOB_CONFIG_XML)

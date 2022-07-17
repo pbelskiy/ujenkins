@@ -142,3 +142,28 @@ class Jobs:
             data=config,
             headers=headers
         )
+
+    def reconfigure(self, name: str, config: str) -> None:
+        """
+        Reconfigure specified job name.
+
+        Args:
+            name (str):
+                Job name or path (within folder).
+
+            config (str):
+                XML config of new job. It`s convenient way to use `get_config()`
+                to get existing job config and change it on your taste, or to
+                use `construct_config()` method.
+
+        Returns:
+            None
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        return self.jenkins._request(
+            'POST',
+            '/{}/job/{}/config.xml'.format(folder_name, job_name),
+            data=config,
+            headers={'Content-Type': 'text/xml'},
+        )
