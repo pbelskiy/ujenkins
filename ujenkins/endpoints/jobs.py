@@ -163,7 +163,25 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            '/{}/job/{}/config.xml'.format(folder_name, job_name),
+            f'/{folder_name}/job/{job_name}/config.xml',
             data=config,
             headers={'Content-Type': 'text/xml'},
+        )
+
+    def delete(self, name: str) -> None:
+        """
+        Delete existed jenkins job.
+
+        Args:
+            name (str):
+                Job name. For job in folder just use `/`.
+
+        Returns:
+            None
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        return self.jenkins._request(
+            'POST',
+            f'/{folder_name}/job/{job_name}/doDelete'
         )

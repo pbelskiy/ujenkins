@@ -267,3 +267,13 @@ def test_reconfigure(client):
     )
 
     client.jobs.reconfigure('some_job', JOB_CONFIG_XML)
+
+
+@responses.activate
+def test_delete(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/job/.+/doDelete'),
+    )
+
+    client.jobs.delete('useless_job')
