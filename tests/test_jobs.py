@@ -292,3 +292,16 @@ def test_copy(client):
     )
 
     client.jobs.copy('job_old', 'job_new')
+
+
+@responses.activate
+def test_rename(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/doRename'),
+        match=[responses.matchers.query_param_matcher({
+            'newName': 'job_new',
+        })],
+    )
+
+    client.jobs.rename('job_old', 'job_new')

@@ -213,3 +213,29 @@ class Jobs:
             f'/{folder_name}/createItem',
             params=params
         )
+
+    def rename(self, name: str, new_name: str) -> None:
+        """
+        Rename specified job name.
+
+        Args:
+            name (str):
+                Job name or path (within folder).
+
+            new_name (str):
+                New job name.
+
+        Returns:
+            None
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        params = {
+            'newName': new_name
+        }
+
+        return self.jenkins._request(
+            'POST',
+            f'/{folder_name}/job/{job_name}/doRename',
+            params=params
+        )
