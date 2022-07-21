@@ -257,3 +257,21 @@ class Jobs:
             'POST',
             f'/{folder_name}/job/{job_name}/enable'
         )
+
+    def disable(self, name: str) -> None:
+        """
+        Disable specified job.
+
+        Args:
+            name (str):
+                Job name.
+
+        Returns:
+            None
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        return self.jenkins._request(
+            'POST',
+            f'/{folder_name}/job/{job_name}/disable'
+        )

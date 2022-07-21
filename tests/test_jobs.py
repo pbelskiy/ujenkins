@@ -315,3 +315,13 @@ def test_enable(client):
     )
 
     client.jobs.enable('job')
+
+
+@responses.activate
+def test_disable(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/disable'),
+    )
+
+    client.jobs.disable('job')
