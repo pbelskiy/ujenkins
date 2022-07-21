@@ -277,3 +277,18 @@ def test_delete(client):
     )
 
     client.jobs.delete('useless_job')
+
+
+@responses.activate
+def test_copy(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/createItem'),
+        match=[responses.matchers.query_param_matcher({
+            'mode': 'copy',
+            'from': 'job_old',
+            'name': 'job_new',
+        })],
+    )
+
+    client.jobs.copy('job_old', 'job_new')

@@ -185,3 +185,31 @@ class Jobs:
             'POST',
             f'/{folder_name}/job/{job_name}/doDelete'
         )
+
+    def copy(self, name: str, new_name: str) -> None:
+        """
+        Copy specified job.
+
+        Args:
+            name (str):
+                Job name or path (within folder).
+
+            new_name (str):
+                New job name.
+
+        Returns:
+            None
+        """
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        params = {
+            'mode': 'copy',
+            'from': job_name,
+            'name': new_name,
+        }
+
+        return self.jenkins._request(
+            'POST',
+            f'/{folder_name}/createItem',
+            params=params
+        )
