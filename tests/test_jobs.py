@@ -305,3 +305,13 @@ def test_rename(client):
     )
 
     client.jobs.rename('job_old', 'job_new')
+
+
+@responses.activate
+def test_enable(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/enable'),
+    )
+
+    client.jobs.enable('job')
