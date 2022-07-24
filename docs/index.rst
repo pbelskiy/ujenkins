@@ -39,6 +39,12 @@ System
 .. autoclass:: ujenkins.endpoints.system.System
     :members:
 
+Views
+~~~~~
+
+.. autoclass:: ujenkins.endpoints.views.Views
+    :members:
+
 Helpers
 ~~~~~~~
 

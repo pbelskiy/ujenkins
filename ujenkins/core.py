@@ -4,7 +4,7 @@ from collections import namedtuple
 from http import HTTPStatus
 from typing import Any, Callable, Optional, Tuple
 
-from ujenkins.endpoints import Builds, Jobs, Nodes, System
+from ujenkins.endpoints import Builds, Jobs, Nodes, System, Views
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
 Response = namedtuple('Response', ['status', 'headers', 'body'])
@@ -17,6 +17,7 @@ class Jenkins:
         self.jobs = Jobs(self)
         self.nodes = Nodes(self)
         self.system = System(self)
+        self.views = Views(self)
 
     @staticmethod
     def _process(response: Response, callback: Optional[Callable] = None) -> Any:
