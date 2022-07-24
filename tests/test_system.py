@@ -2,62 +2,7 @@ import re
 
 import responses
 
-STATUS_JSON = """{
-  "_class" : "hudson.model.Hudson",
-  "assignedLabels" : [
-    {
-      "name" : "master"
-    }
-  ],
-  "mode" : "NORMAL",
-  "nodeDescription" : "the master Jenkins node",
-  "nodeName" : "",
-  "numExecutors" : 2,
-  "description" : null,
-  "jobs" : [
-    {
-      "_class" : "hudson.model.FreeStyleProject",
-      "name" : "jobbb",
-      "url" : "http://localhost:8080/job/jobbb/",
-      "color" : "blue"
-    },
-    {
-      "_class" : "com.cloudbees.hudson.plugins.folder.Folder",
-      "name" : "teest_folder",
-      "url" : "http://localhost:8080/job/teest_folder/"
-    }
-  ],
-  "overallLoad" : {
-
-  },
-  "primaryView" : {
-    "_class" : "hudson.model.AllView",
-    "name" : "all",
-    "url" : "http://localhost:8080/"
-  },
-  "quietDownReason" : null,
-  "quietingDown" : false,
-  "slaveAgentPort" : 50000,
-  "unlabeledLoad" : {
-    "_class" : "jenkins.model.UnlabeledLoadStatistics"
-  },
-  "url" : "http://localhost:8080/",
-  "useCrumbs" : true,
-  "useSecurity" : true,
-  "views" : [
-    {
-      "_class" : "hudson.model.AllView",
-      "name" : "all",
-      "url" : "http://localhost:8080/"
-    },
-    {
-      "_class" : "hudson.model.ListView",
-      "name" : "test2",
-      "url" : "http://localhost:8080/view/test2/"
-    }
-  ]
-}
-"""
+from tests import JENKINS_INFO_JSON
 
 TOKEN_JSON = """
   {
@@ -77,7 +22,7 @@ def test_get_status(client):
         responses.GET,
         re.compile(r'.+/api/json'),
         content_type='application/json;charset=utf-8',
-        body=STATUS_JSON
+        body=JENKINS_INFO_JSON
     )
 
     status = client.system.get_status()
@@ -115,7 +60,7 @@ def test_is_ready(client):
         responses.GET,
         re.compile(r'.+/api/json'),
         content_type='application/json;charset=utf-8',
-        body=STATUS_JSON
+        body=JENKINS_INFO_JSON
     )
 
     ready = client.system.is_ready()

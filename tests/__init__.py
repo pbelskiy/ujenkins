@@ -9,10 +9,15 @@ JENKINS_INFO_JSON = """
     "description": null,
     "jobs": [
         {
-            "_class": "hudson.model.FreeStyleProject",
-            "color": "notbuilt",
-            "name": "test",
-            "url": "http://localhost:8080/job/test/"
+            "_class" : "hudson.model.FreeStyleProject",
+            "name" : "test",
+            "url" : "http://localhost:8080/job/test/",
+            "color" : "red"
+        },
+        {
+            "_class" : "com.cloudbees.hudson.plugins.folder.Folder",
+            "name" : "test_folder",
+            "url" : "http://localhost:8080/job/test_folder/"
         }
     ],
     "mode": "NORMAL",
