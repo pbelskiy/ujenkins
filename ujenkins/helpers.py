@@ -157,7 +157,7 @@ def parse_build_url(build_url: str) -> Tuple[str, int]:
     """
     match = JOB_BUILD_URL_RE.search(build_url)
     if not match:
-        raise JenkinsError('Invalid URL: {}'.format(build_url))
+        raise JenkinsError(f'Invalid URL: {build_url}')
 
     name = '/'.join(filter(
         lambda x: x != 'job',

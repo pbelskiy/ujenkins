@@ -137,7 +137,7 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            '/{}/createItem'.format(folder_name),
+            f'/{folder_name}/createItem',
             params=params,
             data=config,
             headers=headers

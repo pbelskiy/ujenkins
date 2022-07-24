@@ -129,7 +129,7 @@ class Nodes:
 
         return self.jenkins._request(
             'GET',
-            '/computer/{}/rssAll'.format(name),
+            f'/computer/{name}/rssAll',
             callback=callback
         )
 
@@ -277,7 +277,7 @@ class Nodes:
 
         return self.jenkins._request(
             'POST',
-            '/computer/{}/config.xml'.format(name),
+            f'/computer/{name}/config.xml',
             data=config,
             headers={'Content-Type': 'text/xml'},
         )
@@ -355,6 +355,6 @@ class Nodes:
 
         return self.jenkins._request(
             'POST',
-            '/computer/{}/changeOfflineCause'.format(name),
+            f'/computer/{name}/changeOfflineCause',
             params={'offlineMessage': message}
         )
