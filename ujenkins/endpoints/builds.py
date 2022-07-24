@@ -13,7 +13,8 @@ class Builds:
         Get list of builds for specified job.
 
         Args:
-            name (str): job name or path (if in folder).
+            name (str):
+                Job name or path (if in folder).
 
         Returns:
             List: list of build for specified job.
@@ -41,8 +42,11 @@ class Builds:
         Get detailed information about specified build number of job.
 
         Args:
-            name (str): job name or path (if in folder).
-            build_id (int): build identifier.
+            name (str):
+                Job name or path (if in folder).
+
+            build_id (int):
+                Build identifier.
 
         Returns:
             dict: information about build.
@@ -59,8 +63,11 @@ class Builds:
         Get console output of specified build.
 
         Args:
-            name (str): job name or path (if in folder).
-            build_id (int): build identifier.
+            name (str):
+                Job name or path (if in folder).
+
+            build_id (int):
+                Build identifier.
 
         Returns:
             str: build output.
@@ -84,9 +91,14 @@ class Builds:
         https://www.jenkins.io/blog/2010/08/11/quiet-period-feature/
 
         Args:
-            name (str): job name or path (if in folder).
-            parameters (int): parameters of triggering build.
-            delay (int): delay before start.
+            name (str):
+                Job name or path (if in folder).
+
+            parameters (int):
+                Parameters of triggering build.
+
+            delay (int):
+                Delay before start.
 
         Returns:
             Optional[int]: queue item id.
@@ -139,8 +151,11 @@ class Builds:
         Stop specified build.
 
         Args:
-            name (str): job name or path (if in folder).
-            build_id (int): build identifier.
+            name (str):
+                Job name or path (if in folder).
+
+            build_id (int):
+                Build identifier.
 
         Returns:
             None
@@ -157,8 +172,11 @@ class Builds:
         Delete specified build.
 
         Args:
-            name (str): job name or path (if in folder).
-            build_id (int): build identifier.
+            name (str):
+                Job name or path (if in folder).
+
+            build_id (int):
+                Build identifier.
 
         Returns:
             None

@@ -105,7 +105,8 @@ class System:
         Generate new API token.
 
         Args:
-            name (str): name of token.
+            name (str):
+                Name of token.
 
         Returns:
             Tuple[str, str]: tokenValue - uses for authorization,
@@ -133,7 +134,8 @@ class System:
         Revoke API token, please note that uuid is used, not value.
 
         Args:
-            token_uuid (str): uuid of token to be revoked.
+            token_uuid (str):
+                UUID of token to be revoked.
 
         Returns:
             None
@@ -151,7 +153,8 @@ class System:
         Execute Groovy script on the server.
 
         Args:
-            script (str): script content.
+            script (str):
+                Script content.
 
         Returns:
             str: output of script.

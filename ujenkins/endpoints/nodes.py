@@ -44,6 +44,9 @@ class Nodes:
         """
         Get all available nodes on server.
 
+        Returns:
+            Dict[str, dict]: node name, and it`s detailed information.
+
         Example:
 
         .. code-block:: python
@@ -53,8 +56,6 @@ class Nodes:
                 "buildbot1": dict(...)
             }
 
-        Returns:
-            Dict[str, dict]: node name, and it`s detailed information.
         """
         def callback(response):
             nodes = json.loads(response.body)
@@ -71,6 +72,13 @@ class Nodes:
         Return list of detalizied failed builds for node name. Actually it
         parsed from RSS feed. usefull for build restart. Ascending builds sort.
 
+        Args:
+            name (str):
+                Node name.
+
+        Returns:
+            List[dict]: builds and their information.
+
         Example:
 
         .. code-block:: python
@@ -80,13 +88,6 @@ class Nodes:
                 'number': 1,
                 'url': 'http://localhost:8080/job/test/1/'
             }]
-
-        Args:
-            name (str):
-                Node name.
-
-        Returns:
-            List[dict]: builds and their information.
         """
         def callback(response) -> List[dict]:
             return _parse_rss(response.body)
@@ -104,6 +105,13 @@ class Nodes:
         Return list of all detalizied builds for node name, actually it parsed
         from RSS feed. Ascending builds sort.
 
+        Args:
+            name (str):
+                Node name.
+
+        Returns:
+            List[dict]: list of all builds for specified node.
+
         Example:
 
         .. code-block:: python
@@ -113,14 +121,6 @@ class Nodes:
                 'number': 1,
                 'url': 'http://localhost:8080/job/test/1/'
             }]
-
-        Args:
-            name (str):
-                Node name.
-
-        Returns:
-            List[dict]: list of all builds for specified node.
-
         """
         def callback(response) -> List[dict]:
             return _parse_rss(response.body)
@@ -138,7 +138,8 @@ class Nodes:
         Get node detailed information.
 
         Args:
-            name (str): node name.
+            name (str):
+                Node name.
 
         Returns:
             dict: detailed node information.
@@ -155,7 +156,8 @@ class Nodes:
         Return node config in XML format.
 
         Args:
-            name (str): node name.
+            name (str):
+                Node name.
 
         Returns:
             str: node config.
@@ -173,7 +175,7 @@ class Nodes:
 
         Args:
             name (str):
-                node name.
+                Node name.
 
         Returns:
             bool: node existing.
