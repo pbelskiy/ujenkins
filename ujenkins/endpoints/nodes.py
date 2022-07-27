@@ -299,7 +299,8 @@ class Nodes:
             return partial(self.get_info, name)
 
         def callback2(response: dict) -> None:
-            if not response['temporarilyOffline']:
+            # skip if already enabled
+            if response['temporarilyOffline'] is False:
                 return None
 
             return self.jenkins._request('POST', f'/computer/{name}/toggleOffline')
@@ -326,7 +327,8 @@ class Nodes:
             return partial(self.get_info, name)
 
         def callback2(response: dict) -> None:
-            if response['temporarilyOffline']:
+            # skip if already disabled
+            if response['temporarilyOffline'] is True:
                 return None
 
             return self.jenkins._request(

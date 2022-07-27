@@ -376,7 +376,7 @@ def test_sync_enable(client):
         responses.GET,
         re.compile(r'.+/computer/.+/api/json'),
         content_type='application/json;charset=utf-8',
-        body=NODE_INFO_JSON,
+        body='{"offline": true, "temporarilyOffline": true}',
     )
 
     responses.add(
@@ -395,7 +395,7 @@ def test_disable(client):
         responses.GET,
         re.compile(r'.+/computer/.+/api/json'),
         content_type='application/json;charset=utf-8',
-        body=NODE_INFO_JSON.replace('"offline" : true,', '"offline" : false,'),
+        body='{"offline": false, "temporarilyOffline": false}',
     )
 
     responses.add(
