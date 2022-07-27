@@ -383,14 +383,13 @@ def test_sync_enable(client):
         responses.POST,
         re.compile(r'.+/computer/.+/toggleOffline'),
         content_type='text/plain',
-        body='',
     )
 
     client.nodes.enable('master')
 
 
 @responses.activate
-def test_disable(client):
+def test_disable_when_enabled(client):
     responses.add(
         responses.GET,
         re.compile(r'.+/computer/.+/api/json'),
@@ -402,7 +401,6 @@ def test_disable(client):
         responses.POST,
         re.compile(r'.+/computer/.+/toggleOffline'),
         content_type='text/plain',
-        body='',
     )
 
     client.nodes.disable('master')

@@ -284,7 +284,7 @@ class Nodes:
 
     def enable(self, name: str) -> None:
         """
-        Enable node.
+        Enable node if it disabled.
 
         Args:
             name (str):
@@ -309,7 +309,7 @@ class Nodes:
 
     def disable(self, name: str, message: Optional[str] = '') -> None:
         """
-        Disable node.
+        Disable node if it enabled.
 
         Args:
             name (str):
