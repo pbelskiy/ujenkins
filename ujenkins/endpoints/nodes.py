@@ -299,7 +299,7 @@ class Nodes:
             return partial(self.get_info, name)
 
         def callback2(response: dict) -> None:
-            if not response['offline']:
+            if not response['temporarilyOffline']:
                 return None
 
             return self.jenkins._request('POST', f'/computer/{name}/toggleOffline')
@@ -326,7 +326,7 @@ class Nodes:
             return partial(self.get_info, name)
 
         def callback2(response: dict) -> None:
-            if response['offline']:
+            if response['temporarilyOffline']:
                 return None
 
             return self.jenkins._request(
