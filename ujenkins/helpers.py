@@ -35,6 +35,21 @@ def construct_job_config(*,
     """
     Constructs an XML for job creating depends on arguments.
 
+    Example:
+
+    .. code-block:: python
+
+        parameters = [
+            dict(name='param1'),
+            dict(name='param2', description='helpfull information'),
+            dict(name='param3', default='default command value'),
+        ]
+
+        commands = [
+            'echo 1',
+            'sleep 5',
+        ]
+
     Args:
         description (Optional[str]):
             Job description.
@@ -43,28 +58,9 @@ def construct_job_config(*,
 
             Parameters for job, note that name is mandatory field.
 
-            Example:
-
-            .. code-block:: python
-
-                [
-                    dict(name='param1'),
-                    dict(name='param2', description='helpfull information'),
-                    dict(name='param3', default='default command value'),
-                ]
-
         commands (Optional[List[str]]):
             List of commands which will be joined as one string by note that
             entire command block will run in one shell instance.
-
-            Example:
-
-            .. code-block:: python
-
-                [
-                    'echo 1',
-                    'sleep 5',
-                ]
 
     Returns:
         str: Prettified XML ready to submit on Jenkins.

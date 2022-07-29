@@ -22,19 +22,21 @@ class Builds:
         """
         Get list of builds for specified job.
 
+        Example:
+
+        .. code-block:: python
+
+            builds = [
+                {'number': 1, 'url': 'http://localhost/job/test/1/'},
+                {'number': 2, 'url': 'http://localhost/job/test/2/'}
+            ]
+
         Args:
             name (str):
                 Job name or path (if in folder).
 
         Returns:
             List: list of build for specified job.
-
-            .. code-block:: python
-
-                builds = [
-                  {'number': 1, 'url': 'http://localhost/job/test/1/'},
-                  {'number': 2, 'url': 'http://localhost/job/test/2/'}
-                ]
         """
         def callback(response) -> List[dict]:
             return json.loads(response.body)['allBuilds']
