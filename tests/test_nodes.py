@@ -372,56 +372,59 @@ async def test_async_enable(aiohttp_mock, async_client):
 
 @responses.activate
 def test_enable_when_disabled(client):
-    rsp1 = responses.get(
+    responses.add(
+        responses.GET,
         re.compile(r'.+/computer/.+/api/json'),
         content_type='application/json;charset=utf-8',
         body='{"offline": true, "temporarilyOffline": true}',
     )
 
-    rsp2 = responses.post(
+    responses.add(
+        responses.POST,
         re.compile(r'.+/computer/.+/toggleOffline'),
         content_type='text/plain',
     )
 
     client.nodes.enable('master')
-    assert rsp1.call_count == 1
-    assert rsp2.call_count == 1
+    assert len(responses.calls) == 2
 
 
 @responses.activate
 def test_disable_when_enabled(client):
-    rsp1 = responses.get(
+    responses.add(
+        responses.GET,
         re.compile(r'.+/computer/.+/api/json'),
         content_type='application/json;charset=utf-8',
         body='{"offline": false, "temporarilyOffline": false}',
     )
 
-    rsp2 = responses.post(
+    responses.add(
+        responses.POST,
         re.compile(r'.+/computer/.+/toggleOffline'),
         content_type='text/plain',
     )
 
     client.nodes.disable('master')
-    assert rsp1.call_count == 1
-    assert rsp2.call_count == 1
+    assert len(responses.calls) == 2
 
 
 @responses.activate
 def test_disable_when_disabled(client):
-    rsp1 = responses.get(
+    responses.add(
+        responses.GET,
         re.compile(r'.+/computer/.+/api/json'),
         content_type='application/json;charset=utf-8',
         body='{"offline": true, "temporarilyOffline": true}',
     )
 
-    rsp2 = responses.post(
+    responses.add(
+        responses.POST,
         re.compile(r'.+/computer/.+/toggleOffline'),
         content_type='text/plain',
     )
 
     client.nodes.disable('master')
-    assert rsp1.call_count == 1
-    assert rsp2.call_count == 0
+    assert len(responses.calls) == 1
 
 
 @responses.activate
