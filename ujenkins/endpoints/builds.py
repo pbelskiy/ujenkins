@@ -1,6 +1,6 @@
 import json
 
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 
 class Builds:
@@ -37,7 +37,7 @@ class Builds:
             callback=callback,
         )
 
-    def get_info(self, name: str, build_id: int) -> dict:
+    def get_info(self, name: str, build_id: Union[int, str]) -> dict:
         """
         Get detailed information about specified build number of job.
 
@@ -46,7 +46,15 @@ class Builds:
                 Job name or path (if in folder).
 
             build_id (int):
-                Build identifier.
+                Build identifier, could be number or some of standard tags:
+
+                - lastBuild
+                - lastCompletedBuild
+                - lastFailedBuild
+                - lastStableBuild
+                - lastSuccessfulBuild
+                - lastUnstableBuild
+                - lastUnsuccessfulBuild
 
         Returns:
             dict: information about build.

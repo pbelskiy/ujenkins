@@ -20,7 +20,7 @@ Universal Python client for `Jenkins <http://jenkins.io>`_
 
 ----
 
-Python client for jenkins which supports both sync and async syntax with same API interfaces.
+Python client for Jenkins which supports both sync and async syntax with same interface.
 
 +----------------------------------------------------+
 |   Comparison to other packages                     |
@@ -56,11 +56,8 @@ Or latest developing version
 
     pip3 install git+https://github.com/pbelskiy/ujenkins
 
-Usage
------
-
-Main advantage of this package is that same API interfaces used for sync
-and async syntax.
+Sync and async usage
+--------------------
 
 Get Jenkins version using sync client:
 
@@ -88,6 +85,26 @@ With async client:
         print(version)
 
     asyncio.run(example())
+
+Examples of usage
+-----------------
+
+Get timestamp of latest build of speciefic job.
+
+Build number or some of standard tags could be used here:
+- lastBuild
+- lastCompletedBuild
+- lastFailedBuild
+- lastStableBuild
+- lastSuccessfulBuild
+- lastUnstableBuild
+- lastUnsuccessfulBuild
+
+.. code:: python
+
+    from ujenkins import JenkinsClient
+    client = JenkinsClient('http://server', 'user', 'password')
+    client.builds.get_info('job', 'lastBuild')['timestamp']
 
 `Please look at tests directory for more examples. <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
 
