@@ -86,8 +86,8 @@ With async client:
 
     asyncio.run(example())
 
-Examples of usage
------------------
+Examples
+--------
 
 Get timestamp of latest build of speciefic job.
 
