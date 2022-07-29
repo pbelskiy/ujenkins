@@ -4,7 +4,17 @@ from typing import Any, List, Optional, Union
 
 
 class Builds:
+    """
+    List of Jenkins tags which can be used insted of build_id number.
 
+    - lastBuild
+    - lastCompletedBuild
+    - lastFailedBuild
+    - lastStableBuild
+    - lastSuccessfulBuild
+    - lastUnstableBuild
+    - lastUnsuccessfulBuild
+    """
     def __init__(self, jenkins):
         self.jenkins = jenkins
 
@@ -46,15 +56,7 @@ class Builds:
                 Job name or path (if in folder).
 
             build_id (int):
-                Build identifier, could be number or some of standard tags:
-
-                - lastBuild
-                - lastCompletedBuild
-                - lastFailedBuild
-                - lastStableBuild
-                - lastSuccessfulBuild
-                - lastUnstableBuild
-                - lastUnsuccessfulBuild
+                Build number or some of standard tags like `lastBuild`.
 
         Returns:
             dict: information about build.
@@ -66,7 +68,7 @@ class Builds:
             f'/{folder_name}/job/{job_name}/{build_id}/api/json'
         )
 
-    def get_output(self, name: str, build_id: int) -> str:
+    def get_output(self, name: str, build_id: Union[int, str]) -> str:
         """
         Get console output of specified build.
 
@@ -75,7 +77,7 @@ class Builds:
                 Job name or path (if in folder).
 
             build_id (int):
-                Build identifier.
+                Build number or some of standard tags like `lastBuild`.
 
         Returns:
             str: build output.
@@ -154,7 +156,7 @@ class Builds:
             data=data,
         )
 
-    def stop(self, name: str, build_id: int) -> None:
+    def stop(self, name: str, build_id: Union[int, str]) -> None:
         """
         Stop specified build.
 
@@ -163,7 +165,7 @@ class Builds:
                 Job name or path (if in folder).
 
             build_id (int):
-                Build identifier.
+                Build number or some of standard tags like `lastBuild`.
 
         Returns:
             None
@@ -175,7 +177,7 @@ class Builds:
             f'/{folder_name}/job/{job_name}/{build_id}/stop'
         )
 
-    def delete(self, name: str, build_id: int) -> None:
+    def delete(self, name: str, build_id: Union[int, str]) -> None:
         """
         Delete specified build.
 
@@ -184,7 +186,7 @@ class Builds:
                 Job name or path (if in folder).
 
             build_id (int):
-                Build identifier.
+                Build number or some of standard tags like `lastBuild`.
 
         Returns:
             None
