@@ -435,3 +435,13 @@ def test_update_offline_reason(client):
     )
 
     client.nodes.update_offline_reason('buildbot', 'maintenance')
+
+
+@responses.activate
+def test_launch_agent(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/computer/.+/launchSlaveAgent'),
+    )
+
+    client.nodes.launch_agent('buildbot')

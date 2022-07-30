@@ -360,3 +360,21 @@ class Nodes:
             f'/computer/{name}/changeOfflineCause',
             params={'offlineMessage': message}
         )
+
+    def launch_agent(self, name: str) -> None:
+        """
+        Launch agent on node, for example in case when disconnected.
+
+        Args:
+            name (str):
+                Node name.
+
+        Returns:
+            None
+        """
+        name = self._normalize_name(name)
+
+        return self.jenkins._request(
+            'POST',
+            f'/computer/{name}/launchSlaveAgent',
+        )
