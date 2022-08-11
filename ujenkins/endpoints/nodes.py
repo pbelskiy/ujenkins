@@ -36,7 +36,7 @@ class Nodes:
     @staticmethod
     def _normalize_name(name: str) -> str:
         # embedded node `master` actually have brackets in HTTP requests
-        if name == 'master':
+        if name in ('master', 'Built-In Node'):
             return '(master)'
         return name
 
