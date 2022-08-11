@@ -56,8 +56,8 @@ Or latest developing version
 
     pip3 install git+https://github.com/pbelskiy/ujenkins
 
-Sync and async usage
---------------------
+Usage
+-----
 
 Get Jenkins version using sync client:
 
@@ -72,7 +72,7 @@ Get Jenkins version using sync client:
 
     example()
 
-With async client:
+With async client (be careful ``AsyncJenkinsClient`` must be called inside async function):
 
 .. code:: python
 
