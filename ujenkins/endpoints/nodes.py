@@ -144,12 +144,22 @@ class Nodes:
         Returns:
             dict: detailed node information.
         """
-        name = self._normalize_name(name)
+        def callback1(_):
+            return self.jenkins._request('GET', f'/computer/{name}/api/json')
 
-        return self.jenkins._request(
-            'GET',
-            f'/computer/{name}/api/json',
-        )
+        def callback2(response: Any):
+            if isinstance(response, JenkinsError):
+                return response
+
+            response['_disconnected'] = (
+                response['offline'] is True and
+                response['temporarilyOffline'] is False
+            )
+
+            return response
+
+        name = self._normalize_name(name)
+        return self.jenkins._chain([callback1, callback2])
 
     def get_config(self, name: str) -> str:
         """
@@ -364,6 +374,9 @@ class Nodes:
     def launch_agent(self, name: str) -> None:
         """
         Launch agent on node, for example in case when disconnected.
+
+        State of connection can be determinated by `get_info(...)` method,
+        which contains custom property defined by packages: `_disconnected`.
 
         Args:
             name (str):
