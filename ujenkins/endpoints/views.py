@@ -24,3 +24,22 @@ class Views:
             '/api/json',
             callback=callback,
         )
+
+    def is_exists(self, name: str) -> bool:
+        """
+        Check if view exists.
+
+        Args:
+            name (str):
+                View name.
+
+        Returns:
+            bool: view existing.
+        """
+        def callback1(_):
+            return self.get
+
+        def callback2(response):
+            return name in response
+
+        return self.jenkins._chain([callback1, callback2])
