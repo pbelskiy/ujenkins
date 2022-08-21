@@ -58,6 +58,7 @@ def test_get_config(client):
     responses.add(
         responses.GET,
         re.compile(r'.*/view/.+/config.xml'),
+        content_type='application/xml',
         body=JENKINS_VIEW_CONFIG_XML,
     )
 
