@@ -43,3 +43,19 @@ class Views:
             return name in response
 
         return self.jenkins._chain([callback1, callback2])
+
+    def get_config(self, name: str) -> str:
+        """
+        Return view config in XML format.
+
+        Args:
+            name (str):
+                View name.
+
+        Returns:
+            str: XML config of view.
+        """
+        return self.jenkins._request(
+            'GET',
+            f'/view/{name}/config.xml',
+        )
