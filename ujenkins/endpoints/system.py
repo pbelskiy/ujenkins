@@ -125,8 +125,8 @@ class System:
         return self.jenkins._request(
             'POST',
             self._build_token_url('generateNewToken'),
-            callback=callback,
             params=params,
+            callback=callback,
         )
 
     def revoke_token(self, token_uuid: str) -> None:

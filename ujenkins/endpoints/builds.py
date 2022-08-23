@@ -154,9 +154,9 @@ class Builds:
         return self.jenkins._request(
             'POST',
             path,
-            callback=callback,
             params={'delay': delay},
             data=data,
+            callback=callback,
         )
 
     def stop(self, name: str, build_id: Union[int, str]) -> None:
