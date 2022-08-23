@@ -26,7 +26,7 @@ class Jobs:
             'GET',
             url + '/api/json',
             params=dict(tree='jobs'),
-            callback=callback,
+            _callback=callback,
         )
 
     def get(self) -> Dict[str, dict]:
@@ -87,7 +87,7 @@ class Jobs:
         return self.jenkins._request(
             'GET',
             f'/{folder_name}/job/{job_name}/config.xml',
-            callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_body,
         )
 
     def is_exists(self, name: str) -> bool:

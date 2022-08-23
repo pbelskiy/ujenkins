@@ -128,7 +128,7 @@ class AsyncJenkinsClient(Jenkins):
                             method: str,
                             path: str,
                             *,
-                            callback: Optional[Callable] = None,
+                            _callback: Optional[Callable] = None,
                             **kwargs: Any
                             ) -> Any:
 
@@ -151,7 +151,7 @@ class AsyncJenkinsClient(Jenkins):
 
         result = self._process(
             Response(response.status, response.headers, body),
-            callback
+            _callback
         )
 
         return result

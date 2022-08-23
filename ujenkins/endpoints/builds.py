@@ -46,7 +46,7 @@ class Builds:
         return self.jenkins._request(
             'GET',
             f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[number,url]',
-            callback=callback,
+            _callback=callback,
         )
 
     def get_info(self, name: str, build_id: Union[int, str]) -> dict:
@@ -89,7 +89,7 @@ class Builds:
         return self.jenkins._request(
             'GET',
             f'/{folder_name}/job/{job_name}/{build_id}/consoleText',
-            callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_body,
         )
 
     def start(self,
@@ -156,7 +156,7 @@ class Builds:
             path,
             params={'delay': delay},
             data=data,
-            callback=callback,
+            _callback=callback,
         )
 
     def stop(self, name: str, build_id: Union[int, str]) -> None:

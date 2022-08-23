@@ -120,7 +120,7 @@ class JenkinsClient(Jenkins):
                       method: str,
                       path: str,
                       *,
-                      callback: Optional[Callable] = None,
+                      _callback: Optional[Callable] = None,
                       **kwargs: Any
                       ) -> Any:
 
@@ -140,7 +140,7 @@ class JenkinsClient(Jenkins):
 
         result = self._process(
             Response(response.status_code, response.headers, response.text),
-            callback
+            _callback
         )
 
         return result

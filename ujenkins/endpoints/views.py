@@ -22,7 +22,7 @@ class Views:
         return self.jenkins._request(
             'GET',
             '/api/json',
-            callback=callback,
+            _callback=callback,
         )
 
     def is_exists(self, name: str) -> bool:
@@ -58,5 +58,5 @@ class Views:
         return self.jenkins._request(
             'GET',
             f'/view/{name}/config.xml',
-            callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_body,
         )

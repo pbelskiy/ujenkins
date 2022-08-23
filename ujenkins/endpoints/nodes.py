@@ -64,7 +64,7 @@ class Nodes:
         return self.jenkins._request(
             'GET',
             '/computer/api/json',
-            callback=callback,
+            _callback=callback,
         )
 
     def get_failed_builds(self, name: str) -> List[dict]:
@@ -97,7 +97,7 @@ class Nodes:
         return self.jenkins._request(
             'GET',
             f'/computer/{name}/rssFailed',
-            callback=callback
+            _callback=callback
         )
 
     def get_all_builds(self, name: str) -> List[dict]:
@@ -130,7 +130,7 @@ class Nodes:
         return self.jenkins._request(
             'GET',
             f'/computer/{name}/rssAll',
-            callback=callback
+            _callback=callback
         )
 
     def get_info(self, name: str) -> dict:
@@ -177,7 +177,7 @@ class Nodes:
         return self.jenkins._request(
             'GET',
             f'/computer/{name}/config.xml',
-            callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_body,
         )
 
     def is_exists(self, name: str) -> bool:

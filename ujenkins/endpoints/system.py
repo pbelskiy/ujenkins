@@ -42,7 +42,7 @@ class System:
 
             return JenkinsVersion(*map(int, versions))
 
-        return self.jenkins._request('GET', '/', callback=callback)
+        return self.jenkins._request('GET', '/', _callback=callback)
 
     def is_ready(self) -> bool:
         """
@@ -58,7 +58,7 @@ class System:
             except JenkinsError:
                 return False
 
-        return self.jenkins._request('GET', '/api/json', callback=callback)
+        return self.jenkins._request('GET', '/api/json', _callback=callback)
 
     def quiet_down(self) -> None:
         """
@@ -126,7 +126,7 @@ class System:
             'POST',
             self._build_token_url('generateNewToken'),
             params=params,
-            callback=callback,
+            _callback=callback,
         )
 
     def revoke_token(self, token_uuid: str) -> None:
@@ -163,5 +163,5 @@ class System:
             'POST',
             '/scriptText',
             data={'script': script},
-            callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_body,
         )
