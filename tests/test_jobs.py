@@ -200,7 +200,7 @@ def test_create(client):
         re.compile(r'.+/createItem'),
     )
 
-    client.jobs.create('some_job', JOB_CONFIG_XML)
+    assert client.jobs.create('some_job', JOB_CONFIG_XML) is None
 
 
 @responses.activate
@@ -210,7 +210,7 @@ def test_reconfigure(client):
         re.compile(r'.*/some_job/config.xml'),
     )
 
-    client.jobs.reconfigure('some_job', JOB_CONFIG_XML)
+    assert client.jobs.reconfigure('some_job', JOB_CONFIG_XML) is None
 
 
 @responses.activate
@@ -220,7 +220,7 @@ def test_delete(client):
         re.compile(r'.+/job/.+/doDelete'),
     )
 
-    client.jobs.delete('useless_job')
+    assert client.jobs.delete('useless_job') is None
 
 
 @responses.activate
@@ -235,7 +235,7 @@ def test_copy(client):
         })],
     )
 
-    client.jobs.copy('job_old', 'job_new')
+    assert client.jobs.copy('job_old', 'job_new') is None
 
 
 @responses.activate
@@ -248,7 +248,7 @@ def test_rename(client):
         })],
     )
 
-    client.jobs.rename('job_old', 'job_new')
+    assert client.jobs.rename('job_old', 'job_new') is None
 
 
 @responses.activate
@@ -258,7 +258,7 @@ def test_enable(client):
         re.compile(r'.+/enable'),
     )
 
-    client.jobs.enable('job')
+    assert client.jobs.enable('job') is None
 
 
 @responses.activate
@@ -268,4 +268,4 @@ def test_disable(client):
         re.compile(r'.+/disable'),
     )
 
-    client.jobs.disable('job')
+    assert client.jobs.disable('job') is None

@@ -63,8 +63,7 @@ def test_is_ready(client):
         body=JENKINS_INFO_JSON
     )
 
-    ready = client.system.is_ready()
-    assert ready is True
+    assert client.system.is_ready() is True
 
 
 @responses.activate
@@ -74,7 +73,7 @@ def test_quiet_down(client):
         re.compile(r'.+/quietDown'),
     )
 
-    client.system.quiet_down()
+    assert client.system.quiet_down() is None
 
 
 @responses.activate
@@ -84,7 +83,7 @@ def test_cancel_quiet_down(client):
         re.compile(r'.+/cancelQuietDown'),
     )
 
-    client.system.cancel_quiet_down()
+    assert client.system.cancel_quiet_down() is None
 
 
 @responses.activate
@@ -94,7 +93,7 @@ def test_restart(client):
         re.compile(r'.+/restart'),
     )
 
-    client.system.restart()
+    assert client.system.restart() is None
 
 
 @responses.activate
@@ -104,7 +103,7 @@ def test_safe_restart(client):
         re.compile(r'.+/safeRestart'),
     )
 
-    client.system.safe_restart()
+    assert client.system.safe_restart() is None
 
 
 @responses.activate
@@ -128,7 +127,7 @@ def test_revoke_token(client):
         re.compile(r'.+/me/descriptorByName/jenkins.security.ApiTokenProperty/revoke'),
     )
 
-    client.system.revoke_token('a8f93d3d-e431-4c88-ad6f-f71dd50e774f')
+    assert client.system.revoke_token('a8f93d3d-e431-4c88-ad6f-f71dd50e774f') is None
 
 
 @responses.activate

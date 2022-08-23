@@ -310,7 +310,7 @@ def test_is_exists(client):
         status=404,
     )
 
-    client.nodes.is_exists('master')
+    assert client.nodes.is_exists('master') is False
 
 
 @responses.activate
@@ -327,7 +327,7 @@ def test_create(client):
         re.compile(r'.+/computer/doCreateItem'),
     )
 
-    client.nodes.create('buildbot', {})
+    assert client.nodes.create('buildbot', {}) is None
 
 
 @responses.activate
@@ -337,7 +337,7 @@ def test_delete(client):
         re.compile(r'.+/computer/.+/doDelete'),
     )
 
-    client.nodes.delete('buildbot')
+    assert client.nodes.delete('buildbot') is None
 
 
 @responses.activate
@@ -347,7 +347,7 @@ def test_reconfigure(client):
         re.compile(r'.+/computer/.+/config.xml'),
     )
 
-    client.nodes.reconfigure('buildbot', NODE_CONFIG_XML)
+    assert client.nodes.reconfigure('buildbot', NODE_CONFIG_XML) is None
 
     with pytest.raises(JenkinsError):
         client.nodes.reconfigure('(master)', NODE_CONFIG_XML)
@@ -367,7 +367,8 @@ async def test_async_enable(aiohttp_mock, async_client):
         body='',
     )
 
-    await async_client.nodes.enable('master')
+    response = await async_client.nodes.enable('master')
+    assert response is None
 
 
 @responses.activate
@@ -385,7 +386,7 @@ def test_enable_when_disabled(client):
         content_type='text/plain',
     )
 
-    client.nodes.enable('master')
+    assert client.nodes.enable('master') is None
     assert len(responses.calls) == 2
 
 
@@ -404,7 +405,7 @@ def test_disable_when_enabled(client):
         content_type='text/plain',
     )
 
-    client.nodes.disable('master')
+    assert client.nodes.disable('master') is None
     assert len(responses.calls) == 2
 
 
@@ -423,7 +424,7 @@ def test_disable_when_disabled(client):
         content_type='text/plain',
     )
 
-    client.nodes.disable('master')
+    assert client.nodes.disable('master') is None
     assert len(responses.calls) == 1
 
 
@@ -434,7 +435,7 @@ def test_update_offline_reason(client):
         re.compile(r'.+/computer/.+/changeOfflineCause'),
     )
 
-    client.nodes.update_offline_reason('buildbot', 'maintenance')
+    assert client.nodes.update_offline_reason('buildbot', 'maintenance') is None
 
 
 @responses.activate
@@ -444,4 +445,4 @@ def test_launch_agent(client):
         re.compile(r'.+/computer/.+/launchSlaveAgent'),
     )
 
-    client.nodes.launch_agent('buildbot')
+    assert client.nodes.launch_agent('buildbot') is None

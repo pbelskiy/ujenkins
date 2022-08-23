@@ -119,7 +119,7 @@ def test_stop(client):
         re.compile(r'.*/job/.+/stop'),
     )
 
-    client.builds.stop('job', 424)
+    assert client.builds.stop('job', 424) is None
 
 
 @responses.activate
@@ -129,4 +129,4 @@ def test_delete(client):
         re.compile(r'.*/job/.+/doDelete'),
     )
 
-    client.builds.delete('job', 424)
+    assert client.builds.delete('job', 424) is None
