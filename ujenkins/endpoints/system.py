@@ -162,5 +162,6 @@ class System:
         return self.jenkins._request(
             'POST',
             '/scriptText',
-            data={'script': script}
+            data={'script': script},
+            callback=self.jenkins._return_body,
         )

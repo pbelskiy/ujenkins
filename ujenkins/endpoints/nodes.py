@@ -176,7 +176,8 @@ class Nodes:
 
         return self.jenkins._request(
             'GET',
-            f'/computer/{name}/config.xml'
+            f'/computer/{name}/config.xml',
+            callback=self.jenkins._return_body,
         )
 
     def is_exists(self, name: str) -> bool:

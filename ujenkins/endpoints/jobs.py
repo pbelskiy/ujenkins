@@ -86,7 +86,8 @@ class Jobs:
 
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/config.xml'
+            f'/{folder_name}/job/{job_name}/config.xml',
+            callback=self.jenkins._return_body,
         )
 
     def is_exists(self, name: str) -> bool:

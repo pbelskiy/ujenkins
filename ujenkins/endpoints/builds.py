@@ -88,7 +88,8 @@ class Builds:
 
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/{build_id}/consoleText'
+            f'/{folder_name}/job/{job_name}/{build_id}/consoleText',
+            callback=self.jenkins._return_body,
         )
 
     def start(self,

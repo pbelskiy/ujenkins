@@ -46,7 +46,7 @@ class Jenkins:
         if 'application/json' in response.headers.get('Content-Type', ''):
             return json.loads(response.body)
 
-        return response.body
+        return None
 
     @staticmethod
     def _get_folder_and_job_name(name: str) -> Tuple[str, str]:
@@ -68,3 +68,7 @@ class Jenkins:
 
         if retry.get('total', 0) <= 0:
             raise JenkinsError('Invalid `total` in retry argument must be > 0')
+
+    @staticmethod
+    def _return_body(response: Response) -> str:
+        return response.body
