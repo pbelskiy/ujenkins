@@ -64,3 +64,20 @@ def test_get_config(client):
 
     config = client.views.get_config('buildbot')
     assert '<name>my_view</name>' in config
+
+
+@responses.activate
+def test_create(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/json'),
+        body=JENKINS_INFO_JSON,
+    )
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/createView'),
+    )
+
+    assert client.views.create('new_view', JENKINS_VIEW_CONFIG_XML) is None
+    assert len(responses.calls) == 2

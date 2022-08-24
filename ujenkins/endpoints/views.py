@@ -2,6 +2,8 @@ import json
 
 from typing import Dict
 
+from ujenkins.exceptions import JenkinsError
+
 
 class Views:
 
@@ -60,3 +62,37 @@ class Views:
             f'/view/{name}/config.xml',
             _callback=self.jenkins._return_body,
         )
+
+    def create(self, name: str, config: str) -> None:
+        """
+        Create view using XML config.
+
+        Args:
+            name (str):
+                View name.
+
+            config (str):
+                XML config.
+
+        Returns:
+            None
+        """
+        def callback1(_):
+            return self.get
+
+        def callback2(response: dict) -> None:
+            if name in response:
+                raise JenkinsError(f'View `{name}` is already exists')
+
+            headers = {'Content-Type': 'text/xml'}
+            params = {'name': name}
+
+            return self.jenkins._request(
+                'POST',
+                '/createView',
+                data=config,
+                params=params,
+                headers=headers,
+            )
+
+        return self.jenkins._chain([callback1, callback2])
