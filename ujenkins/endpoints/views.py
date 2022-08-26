@@ -96,3 +96,24 @@ class Views:
             )
 
         return self.jenkins._chain([callback1, callback2])
+
+    def reconfigure(self, name: str, config: str) -> None:
+        """
+        Reconfigure view using XML config.
+
+        Args:
+            name (str):
+                View name.
+
+            config (str):
+                XML config.
+
+        Returns:
+            None
+        """
+        return self.jenkins._request(
+            'POST',
+            f'/view/{name}/config.xml',
+            data=config,
+            headers={'Content-Type': 'text/xml'},
+        )

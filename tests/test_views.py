@@ -81,3 +81,13 @@ def test_create(client):
 
     assert client.views.create('new_view', JENKINS_VIEW_CONFIG_XML) is None
     assert len(responses.calls) == 2
+
+
+@responses.activate
+def test_reconfigure(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/view/.+/config.xml'),
+    )
+
+    assert client.views.reconfigure('new_view', JENKINS_VIEW_CONFIG_XML) is None
