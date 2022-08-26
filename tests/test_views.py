@@ -91,3 +91,13 @@ def test_reconfigure(client):
     )
 
     assert client.views.reconfigure('new_view', JENKINS_VIEW_CONFIG_XML) is None
+
+
+@responses.activate
+def test_delete(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/view/.+/doDelete'),
+    )
+
+    assert client.views.delete('new_view') is None

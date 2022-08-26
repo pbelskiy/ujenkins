@@ -117,3 +117,16 @@ class Views:
             data=config,
             headers={'Content-Type': 'text/xml'},
         )
+
+    def delete(self, name: str) -> None:
+        """
+        Delete view.
+
+        Args:
+            name (str):
+                View name.
+
+        Returns:
+            None
+        """
+        return self.jenkins._request('POST', f'/view/{name}/doDelete')
