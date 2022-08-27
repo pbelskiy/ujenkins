@@ -12,7 +12,7 @@ Response = namedtuple('Response', ['status', 'headers', 'body'])
 
 class Jenkins:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.builds = Builds(self)
         self.jobs = Jobs(self)
         self.nodes = Nodes(self)
