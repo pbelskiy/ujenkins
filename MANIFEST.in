@@ -1,0 +1,4 @@
+include README.rst LICENSE
+include ujenkins/py.typed
+include requirements.txt
+exclude tests/*

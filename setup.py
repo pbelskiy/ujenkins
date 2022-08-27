@@ -34,7 +34,7 @@ setup_args = dict(
     ],
     license='MIT',
     packages=find_packages(),
-    package_data={'ujenkins': ['*']},
+    include_package_data=True,
     author='Petr Belskiy',
     keywords=['jenkins'],
     url='https://github.com/pbelskiy/ujenkins',
