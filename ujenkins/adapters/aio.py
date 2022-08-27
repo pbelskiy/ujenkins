@@ -17,12 +17,12 @@ from ujenkins.core import Jenkins, JenkinsError, JenkinsNotFoundError, Response
 
 class RetryClientSession:
 
-    def __init__(self, loop: Optional[asyncio.AbstractEventLoop], options: dict) -> None:
+    def __init__(self, options: dict) -> None:
         self.total = options['total']
         self.factor = options.get('factor', 1)
         self.statuses = options.get('statuses', [])
 
-        self.session = ClientSession(loop=loop)
+        self.session = ClientSession()
 
     async def request(self, *args: Any, **kwargs: Any) -> ClientResponse:
         for total in range(self.total):
@@ -53,7 +53,6 @@ class AsyncJenkinsClient(Jenkins):
                  user: Optional[str] = None,
                  password: Optional[str] = None,
                  *,
-                 loop: Optional[asyncio.AbstractEventLoop] = None,
                  verify: bool = True,
                  timeout: Optional[float] = None,
                  retry: Optional[dict] = None
@@ -70,9 +69,6 @@ class AsyncJenkinsClient(Jenkins):
 
             password (Optional[str]):
                 Password for user.
-
-            loop (Optional[AbstractEventLoop]):
-                Asyncio current event loop.
 
             verify (Optional[bool]):
                 Verify SSL (default: true).
@@ -105,7 +101,6 @@ class AsyncJenkinsClient(Jenkins):
         """
         super().__init__()
 
-        self.loop = loop or asyncio.get_event_loop()
         self.host = url.rstrip('/')
         self.crumb = None  # type: Any
 
@@ -115,9 +110,9 @@ class AsyncJenkinsClient(Jenkins):
 
         if retry:
             self._validate_retry_argument(retry)
-            self.session = RetryClientSession(loop, retry)
+            self.session = RetryClientSession(retry)
         else:
-            self.session = ClientSession(loop=self.loop)
+            self.session = ClientSession()
 
         self.verify = verify
 
