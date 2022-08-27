@@ -8,7 +8,7 @@ from ujenkins.exceptions import JenkinsNotFoundError
 
 class Jobs:
 
-    def __init__(self, jenkins):
+    def __init__(self, jenkins) -> None:
         self.jenkins = jenkins
 
     def _get_all_jobs(self, url: str, parent: str) -> Dict[str, dict]:

@@ -7,7 +7,7 @@ from ujenkins.exceptions import JenkinsError
 
 class Views:
 
-    def __init__(self, jenkins):
+    def __init__(self, jenkins) -> None:
         self.jenkins = jenkins
 
     def get(self) -> Dict[str, dict]:

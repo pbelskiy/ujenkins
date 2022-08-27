@@ -14,7 +14,7 @@ class JenkinsVersion(NamedTuple):
 
 class System:
 
-    def __init__(self, jenkins):
+    def __init__(self, jenkins) -> None:
         self.jenkins = jenkins
 
     def get_status(self) -> dict:

@@ -17,7 +17,7 @@ from ujenkins.core import Jenkins, JenkinsError, JenkinsNotFoundError, Response
 
 class RetryClientSession:
 
-    def __init__(self, loop: Optional[asyncio.AbstractEventLoop], options: dict):
+    def __init__(self, loop: Optional[asyncio.AbstractEventLoop], options: dict) -> None:
         self.total = options['total']
         self.factor = options.get('factor', 1)
         self.statuses = options.get('statuses', [])
@@ -57,7 +57,7 @@ class AsyncJenkinsClient(Jenkins):
                  verify: bool = True,
                  timeout: Optional[float] = None,
                  retry: Optional[dict] = None
-                 ):
+                 ) -> None:
         """
         Jenkins async client class.
 

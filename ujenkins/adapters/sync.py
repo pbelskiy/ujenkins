@@ -20,7 +20,7 @@ class JenkinsClient(Jenkins):
                  verify: bool = True,
                  timeout: Optional[float] = None,
                  retry: Optional[dict] = None
-                 ):
+                 ) -> None:
         """
         Jenkins sync client class.
 
