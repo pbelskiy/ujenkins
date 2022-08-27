@@ -22,19 +22,19 @@ Universal Python client for `Jenkins <http://jenkins.io>`_
 
 Python client for Jenkins which supports both sync and async syntax with same interface.
 
-+----------------------------------------------------+
-|   Comparison to other packages                     |
-+-------------------+-------+-------+----------------+
-| Name              | Sync  | Async | Python version |
-+===================+=======+=======+================+
-| `ujenkins`_       |  YES  |  YES  | 3.6+           |
-+-------------------+-------+-------+----------------+
-| `aiojenkins`_     |  NO   |  YES  | 3.5+           |
-+-------------------+-------+-------+----------------+
-| `python-jenkins`_ |  YES  |  NO   | 3.4+           |
-+-------------------+-------+-------+----------------+
-| `jenkinsapi`_     |  YES  |  NO   | 3.4+           |
-+-------------------+-------+-------+----------------+
++--------------------------------------------+
+|   Comparison to other packages             |
++-------------------+-------+-------+--------+
+| Name              | Sync  | Async | Python |
++===================+=======+=======+========+
+| `ujenkins`_       |  YES  |  YES  | 3.6+   |
++-------------------+-------+-------+--------+
+| `aiojenkins`_     |  NO   |  YES  | 3.5+   |
++-------------------+-------+-------+--------+
+| `python-jenkins`_ |  YES  |  NO   | 3.4+   |
++-------------------+-------+-------+--------+
+| `jenkinsapi`_     |  YES  |  NO   | 3.4+   |
++-------------------+-------+-------+--------+
 
 .. _ujenkins: https://github.com/pbelskiy/ujenkins
 .. _aiojenkins: https://github.com/pbelskiy/aiojenkins
