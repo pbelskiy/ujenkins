@@ -30,7 +30,8 @@ class Jenkins:
             if response.status in (
                     HTTPStatus.UNAUTHORIZED,
                     HTTPStatus.FORBIDDEN,
-                    HTTPStatus.INTERNAL_SERVER_ERROR):
+                    HTTPStatus.INTERNAL_SERVER_ERROR
+            ):
                 details = 'probably authentication problem:\n' + response.body
             else:
                 details = '\n' + response.body
