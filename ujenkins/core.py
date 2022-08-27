@@ -22,7 +22,6 @@ class Jenkins:
 
     @staticmethod
     def _process(response: Response, callback: Optional[Callable] = None) -> Any:
-
         if response.status == HTTPStatus.NOT_FOUND:
             raise JenkinsNotFoundError(response.body)
 
