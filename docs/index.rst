@@ -33,6 +33,12 @@ Nodes
 .. autoclass:: ujenkins.endpoints.nodes.Nodes
     :members:
 
+Plugins
+~~~~~~~
+
+.. autoclass:: ujenkins.endpoints.plugins.Plugins
+    :members:
+
 System
 ~~~~~~
 
