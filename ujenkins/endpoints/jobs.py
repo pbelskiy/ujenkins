@@ -25,7 +25,6 @@ class Jobs:
         return self.jenkins._request(
             'GET',
             url + '/api/json',
-            params=dict(tree='jobs'),
             _callback=callback,
         )
 
