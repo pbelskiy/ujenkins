@@ -21,6 +21,7 @@ class RetryClientSession:
         self.total = options['total']
         self.factor = options.get('factor', 1)
         self.statuses = options.get('statuses', [])
+        self.methods = options.get('methods', ['GET', 'POST', 'PATCH'])
 
         self.session = ClientSession()
 
@@ -32,6 +33,8 @@ class RetryClientSession:
                 if total + 1 == self.total:
                     raise JenkinsError from e
             else:
+                if response.method.upper() not in self.methods:
+                    break
                 if response.status not in self.statuses:
                     break
 
