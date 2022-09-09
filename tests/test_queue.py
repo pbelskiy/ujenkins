@@ -104,3 +104,13 @@ def test_get_info(client):
 
     item = client.queue.get_info(16)
     assert item['stuck'] is False
+
+
+@responses.activate
+def test_cancel(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.+/queue/cancelItem'),
+    )
+
+    assert client.queue.cancel(16) is None

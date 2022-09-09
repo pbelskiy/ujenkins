@@ -40,3 +40,20 @@ class Queue:
             'GET',
             f'/queue/item/{identifier}/api/json',
         )
+
+    def cancel(self, identifier: int) -> None:
+        """
+        Cancel enqueued build identifier.
+
+        Args:
+            id (int):
+                enqueued item identifier.
+
+        Returns:
+            None
+        """
+        return self.jenkins._request(
+            'POST',
+            '/queue/cancelItem',
+            params=dict(id=identifier),
+        )
