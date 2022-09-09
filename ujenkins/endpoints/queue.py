@@ -24,3 +24,19 @@ class Queue:
             '/queue/api/json',
             _callback=callback,
         )
+
+    def get_info(self, identifier: int) -> dict:
+        """
+        Get info about enqueued build identifier.
+
+        Args:
+            id (int):
+                enqueued item identifier.
+
+        Returns:
+            dict: inforrmation about enqueued build identifier.
+        """
+        return self.jenkins._request(
+            'GET',
+            f'/queue/item/{identifier}/api/json',
+        )
