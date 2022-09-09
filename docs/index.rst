@@ -39,6 +39,12 @@ Plugins
 .. autoclass:: ujenkins.endpoints.plugins.Plugins
     :members:
 
+Queue
+~~~~~
+
+.. autoclass:: ujenkins.endpoints.queue.Queue
+    :members:
+
 System
 ~~~~~~
 
