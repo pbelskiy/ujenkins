@@ -10,10 +10,10 @@ class Queue:
 
     def get(self) -> Dict[int, dict]:
         """
-        Get server builds queue.
+        Get server queue.
 
         Returns:
-            Dict[int, dict]: id in queue, and it's detailed information.
+            Dict[int, dict]: id item in queue, and it's detailed information.
         """
         def callback(response):
             items = json.loads(response.body)['items']
@@ -25,25 +25,25 @@ class Queue:
             _callback=callback,
         )
 
-    def get_info(self, identifier: int) -> dict:
+    def get_info(self, item_id: int) -> dict:
         """
-        Get info about enqueued build identifier.
+        Get info about enqueued item (build) identifier.
 
         Args:
-            id (int):
+            item_id (int):
                 enqueued item identifier.
 
         Returns:
-            dict: inforrmation about enqueued build identifier.
+            dict: identifier information.
         """
         return self.jenkins._request(
             'GET',
-            f'/queue/item/{identifier}/api/json',
+            f'/queue/item/{item_id}/api/json',
         )
 
-    def cancel(self, identifier: int) -> None:
+    def cancel(self, item_id: int) -> None:
         """
-        Cancel enqueued build identifier.
+        Cancel enqueued item (build) identifier.
 
         Args:
             id (int):
@@ -55,5 +55,5 @@ class Queue:
         return self.jenkins._request(
             'POST',
             '/queue/cancelItem',
-            params=dict(id=identifier),
+            params=dict(id=item_id),
         )
