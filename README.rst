@@ -89,7 +89,7 @@ With async client (be careful ``AsyncJenkinsClient`` must be called inside async
 Examples
 --------
 
-Get timestamp of latest build of speciefic job.
+Get timestamp of latest build of speciefic job
 
 Build number or some of standard tags could be used here:
 
@@ -106,6 +106,20 @@ Build number or some of standard tags could be used here:
     from ujenkins import JenkinsClient
     client = JenkinsClient('http://server', 'user', 'password')
     client.builds.get_info('job', 'lastBuild')['timestamp']
+
+Get url of started build
+
+.. code:: python
+
+    from ujenkins import JenkinsClient
+    client = JenkinsClient('http://server', 'user', 'password')
+    item_id = client.builds.start('my_job')
+    while True:
+        time.sleep(5)
+        info = client.queue.get_info(item_id)
+        if 'executable' in info:
+            print(info['executable']['url'])
+            break
 
 `Please look at tests directory for more examples. <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
 

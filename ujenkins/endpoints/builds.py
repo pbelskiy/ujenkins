@@ -111,7 +111,7 @@ class Builds:
                 Parameters of triggering build.
 
             delay (int):
-                Delay before start.
+                Delay before start, default is 0, no delay.
 
         Returns:
             Optional[int]: queue item id.
