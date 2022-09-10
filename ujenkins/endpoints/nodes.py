@@ -213,8 +213,8 @@ class Nodes:
             name (str):
                 Node name.
 
-            config (str):
-                XML config for new node.
+            config (dict):
+                Config for new node, see ujenkins.helpers.construct_node_config
 
         Returns:
             None
