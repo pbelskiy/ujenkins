@@ -90,9 +90,9 @@ Examples
 --------
 
 Get timestamp of latest build of speciefic job
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Build number or some of standard tags could be used here:
-
 - lastBuild
 - lastCompletedBuild
 - lastFailedBuild
@@ -108,6 +108,7 @@ Build number or some of standard tags could be used here:
     client.builds.get_info('job', 'lastBuild')['timestamp']
 
 Get url of started build
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
