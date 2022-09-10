@@ -46,7 +46,7 @@ class Queue:
         Cancel enqueued item (build) identifier.
 
         Args:
-            id (int):
+            item_id (int):
                 enqueued item identifier.
 
         Returns:
