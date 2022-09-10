@@ -1,7 +1,12 @@
 import pytest
 
 from ujenkins.exceptions import JenkinsError
-from ujenkins.helpers import parse_build_url
+from ujenkins.helpers import construct_job_config, parse_build_url
+
+
+def test_construct_job_config():
+    config = construct_job_config(description='awesome')
+    assert '<description>awesome</description>' in config
 
 
 def test_parse_build_urlt():
