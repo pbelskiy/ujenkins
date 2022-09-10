@@ -9,8 +9,18 @@ from ujenkins.helpers import (
 
 
 def test_construct_job_config():
-    config = construct_job_config(description='awesome')
+    config = construct_job_config(
+        description='awesome',
+        parameters=[dict(
+            name='param2',
+            description='helpfull information',
+            default='default command value'
+        )],
+        commands=['echo 1', 'sleep 5'],
+    )
     assert '<description>awesome</description>' in config
+    assert 'param2' in config
+    assert 'sleep 5' in config
 
 
 def test_construct_node_config():
