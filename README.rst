@@ -89,32 +89,26 @@ With async client (be careful ``AsyncJenkinsClient`` must be called inside async
 Examples
 --------
 
-Get timestamp of latest build of speciefic job
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Build number or some of standard tags could be used here:
-
-- lastBuild
-- lastCompletedBuild
-- lastFailedBuild
-- lastStableBuild
-- lastSuccessfulBuild
-- lastUnstableBuild
-- lastUnsuccessfulBuild
+In all code examples below client instance is created by:
 
 .. code:: python
 
-    from ujenkins import JenkinsClient
-    client = JenkinsClient('http://server', 'user', 'password')
+   from ujenkins import JenkinsClient
+   client = JenkinsClient('http://server', 'user', 'password')
+
+
+Get timestamp of latest build:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
     client.builds.get_info('job', 'lastBuild')['timestamp']
 
-Get url of started build
-~~~~~~~~~~~~~~~~~~~~~~~~
+Get url of started build:
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
-    from ujenkins import JenkinsClient
-    client = JenkinsClient('http://server', 'user', 'password')
     item_id = client.builds.start('my_job')
     while True:
         time.sleep(5)
