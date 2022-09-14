@@ -48,6 +48,6 @@ install_requires = [
 
 setup(
     install_requires=install_requires,
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     **setup_args
 )
