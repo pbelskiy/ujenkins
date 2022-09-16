@@ -21,7 +21,9 @@ class RetryClientSession:
         self.total = options['total']
         self.factor = options.get('factor', 1)
         self.statuses = options.get('statuses', [])
-        self.methods = options.get('methods', ['GET', 'POST', 'PATCH'])
+        self.methods = options.get('methods', [
+            'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'TRACE'
+        ])
 
         self.session = ClientSession()
 
@@ -88,6 +90,8 @@ class AsyncJenkinsClient(Jenkins):
                 - factor: ``int`` Sleep between retries (default 1)
                     {factor} * (2 ** ({number of total retries} - 1))
                 - statuses: ``List[int]`` HTTP statues retries on. (default [])
+                - methods: ``List[str]`` list of HTTP methods to retry, idempotent
+                    methods are used by default.
 
                 Example:
 

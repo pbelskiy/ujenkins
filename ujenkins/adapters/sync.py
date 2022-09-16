@@ -49,6 +49,8 @@ class JenkinsClient(Jenkins):
                 - factor: ``int`` Sleep between retries (default 1)
                     {factor} * (2 ** ({number of total retries} - 1))
                 - statuses: ``List[int]`` HTTP statues retries on. (default [])
+                - methods: ``List[str]`` list of HTTP methods to retry, idempotent
+                    methods are used by default.
 
                 Example:
 
@@ -110,7 +112,9 @@ class JenkinsClient(Jenkins):
             total=retry['total'],
             backoff_factor=retry.get('factor', 1),
             status_forcelist=retry.get('statuses', []),
-            method_whitelist=retry.get('methods', ['GET', 'POST', 'PATCH']),
+            method_whitelist=retry.get('methods', [
+                'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'TRACE'
+            ]),
         ))
 
         self.session.mount('http://', adapter)
