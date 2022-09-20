@@ -2,7 +2,7 @@ import json
 import xml.etree.ElementTree
 
 from functools import partial
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 from ujenkins.helpers import parse_build_url
@@ -318,7 +318,7 @@ class Nodes:
 
         return self.jenkins._chain([callback1, callback2])
 
-    def disable(self, name: str, message: Optional[str] = '') -> None:
+    def disable(self, name: str, message: str = '') -> None:
         """
         Disable node if it enabled.
 

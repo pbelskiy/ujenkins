@@ -95,7 +95,7 @@ class Builds:
     def start(self,
               name: str,
               parameters: Optional[dict] = None,
-              delay: Optional[int] = 0
+              delay: int = 0
               ) -> Optional[int]:
         """
         Enqueue new build with delay (default is 0 seconds, means immediately)
