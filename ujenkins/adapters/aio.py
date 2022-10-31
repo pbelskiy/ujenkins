@@ -9,6 +9,7 @@ from aiohttp import (
     ClientResponse,
     ClientSession,
     ClientTimeout,
+    CookieJar,
 )
 
 from ujenkins.adapters import CRUMB_ISSUER_URL
@@ -25,7 +26,7 @@ class RetryClientSession:
             'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'TRACE'
         ])
 
-        self.session = ClientSession()
+        self.session = ClientSession(cookie_jar=CookieJar(unsafe=True))
 
     async def request(self, *args: Any, **kwargs: Any) -> ClientResponse:
         for total in range(self.total):
@@ -115,11 +116,15 @@ class AsyncJenkinsClient(Jenkins):
         if user and password:
             self.auth = BasicAuth(user, password)
 
+        # use unsafe cookie jar to be the same as requests package and add
+        # possibility to use password instead of tokens
+        # https://github.com/pbelskiy/ujenkins/issues/11
+
         if retry:
             self._validate_retry_argument(retry)
             self.session = RetryClientSession(retry)
         else:
-            self.session = ClientSession()
+            self.session = ClientSession(cookie_jar=CookieJar(unsafe=True))
 
         self.verify = verify
 
