@@ -104,12 +104,24 @@ def test_get_output(client):
 def test_start(client):
     responses.add(
         responses.POST,
-        re.compile(r'.*/job/.+/build.+'),
+        re.compile(r'.*/job/.+/build'),
         headers={'Location': 'http://localhost:8080/queue/item/424/'}
     )
 
     response = client.builds.start('job')
     assert response == 424
+
+
+@responses.activate
+def test_start_with_parameters(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/buildWithParameters'),
+        headers={'Location': 'http://localhost:8080/queue/item/777/'}
+    )
+
+    response = client.builds.start('job', dict(a=1))
+    assert response == 777
 
 
 @responses.activate
