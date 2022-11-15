@@ -117,21 +117,15 @@ class Builds:
             Optional[int]: queue item id.
         """
         def callback(response) -> Optional[int]:
-            # FIXME: on Jenkins 1.554 there is problem, no queue id returned
             queue_item_url = response.headers['location']
             try:
                 queue_id = queue_item_url.rstrip('/').split('/')[-1]
                 return int(queue_id)
             except ValueError:
+                # no queue id returned on Jenkins 1.554
                 return None
 
-        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
-
-        path = f'/{folder_name}/job/{job_name}'
-
-        data = None
-
-        if parameters:
+        def format_data():
             formatted_parameters = [
                 {'name': k, 'value': str(v)} for k, v in parameters.items()
             ]  # type: Any
@@ -147,8 +141,17 @@ class Builds:
                 }),
                 **parameters,
             }
+
+            return data
+
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+        path = f'/{folder_name}/job/{job_name}'
+
+        if parameters:
+            data = format_data()
             path += '/buildWithParameters'
         else:
+            data = None
             path += '/build'
 
         return self.jenkins._request(
