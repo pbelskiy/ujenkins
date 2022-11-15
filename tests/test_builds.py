@@ -113,6 +113,18 @@ def test_start(client):
 
 
 @responses.activate
+def test_start_no_queue_id(client):
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/build'),
+        headers={'Location': 'some strange header'}
+    )
+
+    response = client.builds.start('job')
+    assert response is None
+
+
+@responses.activate
 def test_start_with_parameters(client):
     responses.add(
         responses.POST,
