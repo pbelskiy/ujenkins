@@ -40,9 +40,9 @@ class Jenkins:
                     HTTPStatus.FORBIDDEN,
                     HTTPStatus.INTERNAL_SERVER_ERROR
             ):
-                details = 'probably authentication problem:\n' + response.body
+                details = 'probably authentication problem:\n\n' + response.body
             else:
-                details = '\n' + response.body
+                details = '\n\n' + response.body
 
             raise JenkinsError(
                 f'Request error [{response.status}], {details}',
