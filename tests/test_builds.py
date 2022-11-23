@@ -1,3 +1,4 @@
+import json
 import re
 
 import responses
@@ -126,14 +127,91 @@ def test_start_no_queue_id(client):
 
 @responses.activate
 def test_start_with_parameters(client):
+    data = {
+        'json': json.dumps({
+            'parameter': {'name': 'a', 'value': '1'},
+            'statusCode': '303',
+            'redirectTo': '.'
+        }),
+        'a': '1'
+    }
+
     responses.add(
         responses.POST,
         re.compile(r'.*/job/.+/buildWithParameters'),
-        headers={'Location': 'http://localhost:8080/queue/item/777/'}
+        headers={'Location': 'http://localhost:8080/queue/item/777/'},
+        match=[responses.matchers.urlencoded_params_matcher(data)],
     )
 
     response = client.builds.start('job', dict(a=1))
     assert response == 777
+
+
+@responses.activate
+def test_start_with_parameters_as_kwargs(client):
+    data = {
+        'json': json.dumps({
+            'parameter': {'name': 'a', 'value': '1'},
+            'statusCode': '303',
+            'redirectTo': '.'
+        }),
+        'a': '1'
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/buildWithParameters'),
+        headers={'Location': 'http://localhost:8080/queue/item/123/'},
+        match=[responses.matchers.urlencoded_params_matcher(data)],
+    )
+
+    response = client.builds.start('test', a=1)
+    assert response == 123
+
+
+@responses.activate
+def test_start_with_parameters_overwrite(client):
+    data = {
+        'json': json.dumps({
+            'parameter': {'name': 'parameters', 'value': '1'},
+            'statusCode': '303',
+            'redirectTo': '.'
+        }),
+        'parameters': '1'
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/buildWithParameters'),
+        headers={'Location': 'http://localhost:8080/queue/item/123/'},
+        match=[responses.matchers.urlencoded_params_matcher(data)],
+    )
+
+    response = client.builds.start('test', parameters=1)
+    assert response == 123
+
+
+@responses.activate
+def test_start_with_mixed_parameters(client):
+    data = {
+        'json': json.dumps({
+            'parameter': [{'name': 'a', 'value': '1'}, {'name': 'b', 'value': '2'}],
+            'statusCode': '303',
+            'redirectTo': '.'
+        }),
+        'a': '1',
+        'b': '2',
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/buildWithParameters'),
+        headers={'Location': 'http://localhost:8080/queue/item/123/'},
+        match=[responses.matchers.urlencoded_params_matcher(data)],
+    )
+
+    response = client.builds.start('test', parameters=dict(a=1), b=2)
+    assert response == 123
 
 
 @responses.activate

@@ -94,8 +94,9 @@ class Builds:
 
     def start(self,
               name: str,
-              parameters: Optional[dict] = None,
-              delay: int = 0
+              parameters: Optional[Any] = None,
+              delay: int = 0,
+              **kwargs: Any
               ) -> Optional[int]:
         """
         Enqueue new build with delay (default is 0 seconds, means immediately)
@@ -107,8 +108,18 @@ class Builds:
             name (str):
                 Job name or path (if in folder).
 
-            parameters (int):
-                Parameters of triggering build.
+            parameters (Optional[Any]):
+                Parameters of triggering build as dict or argument, also
+                parameters can be passed as kwargs.
+
+                Examples:
+
+                .. code-block:: python
+
+                    start(..., parameters=dict(a=1, b='string'))
+                    start(..., a=1, b='string')
+                    start(..., parameters=1)
+                    start(..., parameters(a=1, b='string'), c=3)
 
             delay (int):
                 Delay before start, default is 0, no delay.
@@ -125,7 +136,19 @@ class Builds:
                 # no queue id returned on Jenkins 1.554
                 return None
 
-        def format_data():
+        def format_data(parameters: Optional[dict], kwargs: Any) -> Optional[dict]:
+            if not (parameters or kwargs):
+                return None
+
+            # backward compatibility
+            if isinstance(parameters, dict):
+                parameters.update(**kwargs)
+            elif parameters is None:
+                parameters = kwargs
+            else:
+                parameters = dict(parameters=parameters)
+                parameters.update(**kwargs)
+
             formatted_parameters = [
                 {'name': k, 'value': str(v)} for k, v in parameters.items()
             ]  # type: Any
@@ -147,11 +170,10 @@ class Builds:
         folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
         path = f'/{folder_name}/job/{job_name}'
 
-        if parameters:
-            data = format_data()
+        data = format_data(parameters, kwargs)
+        if data:
             path += '/buildWithParameters'
         else:
-            data = None
             path += '/build'
 
         return self.jenkins._request(
