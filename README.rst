@@ -83,6 +83,7 @@ With async client (be careful ``AsyncJenkinsClient`` must be called inside async
         client = AsyncJenkinsClient('http://server', 'user', 'password')
         version = await client.system.get_version()
         print(version)
+        await client.close()
 
     asyncio.run(example())
 
