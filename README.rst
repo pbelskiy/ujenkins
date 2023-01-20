@@ -117,7 +117,7 @@ Get url of started build:
             info = client.queue.get_info(item_id)
             print(info['executable']['url'])
             break
-        except KeyError:
+        except (KeyError, TypeError):
             pass  # wait for build will be started
 
 `Please look at tests directory for more examples. <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
