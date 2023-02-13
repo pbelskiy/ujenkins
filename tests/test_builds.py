@@ -143,7 +143,7 @@ def test_start_with_parameters(client):
         match=[responses.matchers.urlencoded_params_matcher(data)],
     )
 
-    response = client.builds.start('job', dict(a=1))
+    response = client.builds.start('job', {'a': 1})
     assert response == 777
 
 
@@ -210,7 +210,7 @@ def test_start_with_mixed_parameters(client):
         match=[responses.matchers.urlencoded_params_matcher(data)],
     )
 
-    response = client.builds.start('test', parameters=dict(a=1), b=2)
+    response = client.builds.start('test', parameters={'a': 1, 'b': 2})
     assert response == 123
 
 

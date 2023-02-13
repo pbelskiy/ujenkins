@@ -29,11 +29,11 @@ def test_sync_client_retry():
         'http://server',
         'user',
         'password',
-        retry=dict(
-            total=10,
-            factor=1,
-            statuses=statuses,
-        )
+        retry={
+            'total': 10,
+            'factor': 1,
+            'statuses': statuses
+        }
     )
 
     assert client.session.adapters['http://'].max_retries.status_forcelist == statuses
@@ -45,10 +45,10 @@ async def test_async_client_retry(aiohttp_mock):
         'http://server',
         'user',
         'password',
-        retry=dict(
-            total=10,
-            statuses=[HTTPStatus.INTERNAL_SERVER_ERROR],
-        )
+        retry={
+            'total': 10,
+            'statuses': [HTTPStatus.INTERNAL_SERVER_ERROR],
+        }
     )
     client.crumb = False
 
@@ -79,10 +79,10 @@ async def test_async_client_retry_exception(aiohttp_mock):
         'http://server',
         'user',
         'password',
-        retry=dict(
-            total=2,
-            statuses=[HTTPStatus.INTERNAL_SERVER_ERROR],
-        )
+        retry={
+            'total': 2,
+            'statuses': [HTTPStatus.INTERNAL_SERVER_ERROR],
+        }
     )
 
     aiohttp_mock.get(
@@ -99,14 +99,6 @@ async def test_async_client_retry_exception(aiohttp_mock):
         await client.system.get_version()
 
     await client.close()
-
-
-def test_retry_argument_validation():
-    with pytest.raises(JenkinsError):
-        JenkinsClient('http://server', retry=dict(total=1, strange_argument=1))
-
-    with pytest.raises(JenkinsError):
-        AsyncJenkinsClient('http://server', retry=dict(total=0))
 
 
 @responses.activate
@@ -173,3 +165,25 @@ async def test_async_crumb(aiohttp_mock, async_client):
     assert async_client.crumb['Jenkins-Crumb'] == \
         '9c427004e7ed327a230436ee3103856d8df1eec7f2964a87d3d95e850974c4cd'
     assert version.major == 2
+
+
+def test_retry_argument_validation():
+    with pytest.raises(JenkinsError):
+        JenkinsClient('http://server', retry={'total': 1, 'strange_argument': 1})
+
+    with pytest.raises(JenkinsError):
+        AsyncJenkinsClient('http://server', retry={'total': 0})
+
+
+def test_get_folder_and_job_name(client):
+    folder, job = client._get_folder_and_job_name(
+        'job'
+    )
+    assert folder == ''
+    assert job == 'job'
+
+    folder, job = client._get_folder_and_job_name(
+        'folder/subfolder/sub_job_in_subfolder'
+    )
+    assert folder == 'job/folder/job/subfolder/'
+    assert job == 'sub_job_in_subfolder'

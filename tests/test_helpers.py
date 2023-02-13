@@ -11,11 +11,11 @@ from ujenkins.helpers import (
 def test_construct_job_config():
     config = construct_job_config(
         description='awesome',
-        parameters=[dict(
-            name='param2',
-            description='helpfull information',
-            default='default command value'
-        )],
+        parameters=[{
+            'name': 'param2',
+            'description': 'helpfull information',
+            'default': 'default command value',
+        }],
         commands=['echo 1', 'sleep 5'],
     )
     assert '<description>awesome</description>' in config

@@ -146,7 +146,7 @@ class Builds:
             elif parameters is None:
                 parameters = kwargs
             else:
-                parameters = dict(parameters=parameters)
+                parameters = {'parameters': parameters}
                 parameters.update(**kwargs)
 
             formatted_parameters = [

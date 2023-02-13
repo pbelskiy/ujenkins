@@ -55,5 +55,5 @@ class Queue:
         return self.jenkins._request(
             'POST',
             '/queue/cancelItem',
-            params=dict(id=item_id),
+            params={'id': item_id},
         )
