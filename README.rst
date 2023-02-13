@@ -137,7 +137,8 @@ Get all jobs recursively
 
     all_jobs = get_all_jobs()
 
-`Please look at tests directory for more examples <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
+`Please look at tests directory for more examples 
+<https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
 
 Documentation
 -------------
