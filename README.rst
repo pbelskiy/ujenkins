@@ -98,15 +98,15 @@ In all code examples below client instance is created by:
    client = JenkinsClient('http://server', 'user', 'password')
 
 
-Get timestamp of latest build:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get timestamp of latest build
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
     client.builds.get_info('job', 'lastBuild')['timestamp']
 
-Get url of started build:
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Get url of started build
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -120,7 +120,24 @@ Get url of started build:
         except (KeyError, TypeError):
             pass  # wait for build will be started
 
-`Please look at tests directory for more examples. <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
+Get all jobs recursively
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    def get_all_jobs(url: str = '', parent: str = '') -> Dict[str, dict]:
+        jobs = {}
+
+        for name, prop in client.jobs.get(url).items():
+            jobs[parent + name] = prop
+            if 'Folder' in prop.get('_class', ''):
+                jobs.update(get_all_jobs(prop['url'], parent + name + '/'))
+
+        return jobs
+
+    all_jobs = get_all_jobs()
+
+`Please look at tests directory for more examples <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
 
 Documentation
 -------------

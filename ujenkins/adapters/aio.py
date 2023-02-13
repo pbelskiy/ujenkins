@@ -146,9 +146,14 @@ class AsyncJenkinsClient(Jenkins):
             kwargs.setdefault('headers', {})
             kwargs['headers'].update(self.crumb)
 
+        if path.startswith('http'):
+            url = path
+        else:
+            url = self.host + path
+
         response = await self.session.request(
             method,
-            f'{self.host}{path}',
+            url,
             auth=self.auth,
             ssl=self.verify,
             **kwargs

@@ -11,14 +11,31 @@ class Jobs:
     def __init__(self, jenkins) -> None:
         self.jenkins = jenkins
 
-    def _get_all_jobs(self, url: str, parent: str) -> Dict[str, dict]:
+    def get(self, url: str = '') -> Dict[str, dict]:
+        """
+        Get jobs in selected folder, by default root is used.
 
+        Example:
+
+        .. code-block:: python
+
+            {'folder': {'_class': 'com.cloudbees.hudson.plugins.folder.Folder',
+                        'name': 'folder',
+                        'url': 'http://localhost/job/folder/'},
+             'project': {'_class': 'hudson.model.FreeStyleProject',
+                         'color': 'blue',
+                         'name': 'project',
+                         'url': 'http://localhost/job/project/'}}
+
+        Returns:
+            Dict[str, dict]: full name and job properties.
+        """
         def callback(response):
             all_jobs = {}
 
             jobs = json.loads(response.body)['jobs']
             for job in jobs:
-                all_jobs[parent + job['name']] = job
+                all_jobs[job['name']] = job
 
             return all_jobs
 
@@ -27,30 +44,6 @@ class Jobs:
             url + '/api/json',
             _callback=callback,
         )
-
-    def get(self) -> Dict[str, dict]:
-        """
-        Get dict of all existed jobs in system, including jobs in folder.
-
-        Example:
-
-        .. code-block:: python
-
-            {
-                'test': {
-                    'name': 'test',
-                    'url': 'http://localhost/job/test/'
-                },
-                'folder/foo': {
-                    'name': 'folder/job',
-                    'url': 'http://localhost/job/folder/job/foo/'
-                }
-            }
-
-        Returns:
-            Dict[str, dict]: name and job properties.
-        """
-        return self._get_all_jobs('', '')
 
     def get_info(self, name: str) -> dict:
         """

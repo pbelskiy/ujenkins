@@ -135,9 +135,14 @@ class JenkinsClient(Jenkins):
             kwargs.setdefault('headers', {})
             kwargs['headers'].update(self.crumb)
 
+        if path.startswith('http'):
+            url = path
+        else:
+            url = self.host + path
+
         response = self.session.request(
             method,
-            f'{self.host}{path}',
+            url,
             verify=self.verify,
             **kwargs
         )
