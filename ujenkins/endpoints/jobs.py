@@ -1,7 +1,7 @@
 import json
 
 from functools import partial
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from ujenkins.exceptions import JenkinsNotFoundError
 
@@ -11,9 +11,17 @@ class Jobs:
     def __init__(self, jenkins) -> None:
         self.jenkins = jenkins
 
-    def get(self, url: str = '') -> Dict[str, dict]:
+    def get(self, url: str = '', depth: Optional[int] = None) -> Dict[str, dict]:
         """
         Get jobs in selected folder, by default root is used.
+
+        Args:
+            url (str):
+                URL from job property, by default root is used.
+
+            depth (Optional[int]):
+                Get jobs recursively including folders from selected URL using
+                depth value, default is None which means no recursion.
 
         Example:
 
@@ -32,16 +40,22 @@ class Jobs:
         """
         def callback(response):
             all_jobs = {}
-
             jobs = json.loads(response.body)['jobs']
             for job in jobs:
                 all_jobs[job['name']] = job
 
             return all_jobs
 
+        params = None
+
+        if depth:
+            tree = ',jobs[name,url,color'*depth + ']'*depth
+            params = {'tree': tree.lstrip(',')}
+
         return self.jenkins._request(
             'GET',
             url + '/api/json',
+            params=params,
             _callback=callback,
         )
 

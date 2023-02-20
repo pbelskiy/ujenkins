@@ -97,7 +97,6 @@ In all code examples below client instance is created by:
    from ujenkins import JenkinsClient
    client = JenkinsClient('http://server', 'user', 'password')
 
-
 Get timestamp of latest build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -120,8 +119,37 @@ Get url of started build
         except (KeyError, TypeError):
             pass  # wait for build will be started
 
-Get all jobs recursively
-~~~~~~~~~~~~~~~~~~~~~~~~
+Get all jobs
+~~~~~~~~~~~~
+
+Basically `client.jobs.get()` returns jobs from root (depth = 0), in case you
+want receive all the jobs, there are few approaches for it.
+
+- First is just write your code to recursively form it, example is below.
+- Or just set needed depth, experrimentally 10 is enough.
+
+.. code-block:: python
+
+    jobs = client.jobs.get(depth=10)
+
+    {'folder': {'_class': 'com.cloudbees.hudson.plugins.folder.Folder',
+                'jobs': [{'_class': 'hudson.model.FreeStyleProject',
+                        'color': 'notbuilt',
+                        'name': 'job_in_folder1',
+                        'url': 'http://localhost:8080/job/folder/job/job_in_folder1/'},
+                        {'_class': 'com.cloudbees.hudson.plugins.folder.Folder',
+                        'jobs': [{'_class': 'hudson.model.FreeStyleProject',
+                                    'color': 'notbuilt',
+                                    'name': 'sub_job_in_subfolder',
+                                    'url': 'http://localhost:8080/job/folder/job/subfolder/job/sub_job_in_subfolder/'}],
+                        'name': 'subfolder',
+                        'url': 'http://localhost:8080/job/folder/job/subfolder/'}],
+                'name': 'folder',
+                'url': 'http://localhost:8080/job/folder/'},
+    'job': {'_class': 'hudson.model.FreeStyleProject',
+            'color': 'blue',
+            'name': 'job',
+            'url': 'http://localhost:8080/job/job/'}}
 
 .. code:: python
 
@@ -137,7 +165,7 @@ Get all jobs recursively
 
     all_jobs = get_all_jobs()
 
-`Please look at tests directory for more examples 
+`Please look at tests directory for more examples
 <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
 
 Documentation

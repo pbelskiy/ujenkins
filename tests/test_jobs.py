@@ -114,6 +114,46 @@ JOB_INFO_JSON = """
 }
 """
 
+JOB_INFO_WITH_DEPTH = """
+{
+  "_class" : "hudson.model.Hudson",
+  "jobs" : [
+    {
+      "_class" : "com.cloudbees.hudson.plugins.folder.Folder",
+      "name" : "folder",
+      "url" : "http://localhost:8080/job/folder/",
+      "jobs" : [
+        {
+          "_class" : "hudson.model.FreeStyleProject",
+          "name" : "job_in_folder1",
+          "url" : "http://localhost:8080/job/folder/job/job_in_folder1/",
+          "color" : "notbuilt"
+        },
+        {
+          "_class" : "com.cloudbees.hudson.plugins.folder.Folder",
+          "name" : "subfolder",
+          "url" : "http://localhost:8080/job/folder/job/subfolder/",
+          "jobs" : [
+            {
+              "_class" : "hudson.model.FreeStyleProject",
+              "name" : "sub_job_in_subfolder",
+              "url" : "http://localhost:8080/job/folder/job/subfolder/job/sub_job_in_subfolder/",
+              "color" : "notbuilt"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_class" : "hudson.model.FreeStyleProject",
+      "name" : "job",
+      "url" : "http://localhost:8080/job/job/",
+      "color" : "blue"
+    }
+  ]
+}
+"""
+
 JOB_CONFIG_XML = """
 <?xml version='1.1' encoding='UTF-8'?>
 <project>
@@ -145,6 +185,21 @@ def test_get(client):
     response = client.jobs.get()
     assert len(response) == 2
     assert 'test' in response
+
+
+@responses.activate
+def test_get_with_depth(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/json'),
+        body=JOB_INFO_WITH_DEPTH,
+    )
+
+    response = client.jobs.get(depth=3)
+    assert len(response) == 2
+    assert responses.calls[0].request.params == {
+        'tree': 'jobs[name,url,color,jobs[name,url,color,jobs[name,url,color]]]'
+    }
 
 
 @responses.activate
