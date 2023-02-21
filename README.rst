@@ -122,7 +122,7 @@ Get url of started build
 Get all jobs
 ~~~~~~~~~~~~
 
-Basically `client.jobs.get()` returns jobs from root (depth = 0), in case you
+Basically ``client.jobs.get()`` returns jobs from root (depth = 0), in case you
 want receive all the jobs, there are few approaches for it.
 
 1) Set needed depth, experimentally 10 is enough.
@@ -181,7 +181,7 @@ Documentation
 Testing
 -------
 
-Prerequisites: `tox`
+Prerequisites: ``tox``
 
 Then just run tox, all dependencies and checks will run automatically
 
