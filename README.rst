@@ -125,12 +125,15 @@ Get all jobs
 Basically `client.jobs.get()` returns jobs from root (depth = 0), in case you
 want receive all the jobs, there are few approaches for it.
 
-- First is just write your code to recursively form it, example is below.
-- Or just set needed depth, experrimentally 10 is enough.
+1) Set needed depth, experimentally 10 is enough.
 
 .. code-block:: python
 
     jobs = client.jobs.get(depth=10)
+
+Output:
+
+.. code-block:: python
 
     {'folder': {'_class': 'com.cloudbees.hudson.plugins.folder.Folder',
                 'jobs': [{'_class': 'hudson.model.FreeStyleProject',
@@ -150,6 +153,8 @@ want receive all the jobs, there are few approaches for it.
             'color': 'blue',
             'name': 'job',
             'url': 'http://localhost:8080/job/job/'}}
+
+2) Or just write your code to recursively form it, example is below.
 
 .. code:: python
 
