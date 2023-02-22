@@ -94,8 +94,8 @@ In all code examples below client instance is created by:
 
 .. code:: python
 
-   from ujenkins import JenkinsClient
-   client = JenkinsClient('http://server', 'user', 'password')
+    from ujenkins import JenkinsClient
+    client = JenkinsClient('http://server', 'user', 'password')
 
 Get timestamp of latest build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
