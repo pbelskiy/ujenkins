@@ -126,7 +126,7 @@ class Builds:
 
         Returns:
             Optional[int]: queue item id.
-            
+
         Raises:
             JenkinsNotFoundError: in case build with same arg already enqueued.
         """
