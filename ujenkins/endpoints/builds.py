@@ -126,6 +126,9 @@ class Builds:
 
         Returns:
             Optional[int]: queue item id.
+            
+        Raises:
+            JenkinsNotFoundError: in case build with same arg already enqueued.
         """
         def callback(response) -> Optional[int]:
             queue_item_url = response.headers['location']
