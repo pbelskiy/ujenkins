@@ -107,6 +107,8 @@ Get timestamp of latest build
 Get url of started build
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+Be careful, ``JenkinsNotFoundError`` could be raise in case build with same arg already enqueued.
+
 .. code:: python
 
     item_id = client.builds.start('my_job')
