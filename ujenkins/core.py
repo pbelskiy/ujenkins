@@ -1,8 +1,10 @@
 import json
 
-from collections import namedtuple
 from http import HTTPStatus
-from typing import Any, Callable, Optional, Tuple
+from typing import Any, Callable, NamedTuple, Optional, Tuple, Union
+
+from multidict import CIMultiDictProxy
+from requests.structures import CaseInsensitiveDict
 
 from ujenkins.endpoints import (
     Builds,
@@ -15,7 +17,11 @@ from ujenkins.endpoints import (
 )
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
-Response = namedtuple('Response', ['status', 'headers', 'body'])
+
+class Response(NamedTuple):
+    status: int
+    headers: Union[CaseInsensitiveDict, CIMultiDictProxy]
+    body: str
 
 
 class Jenkins:
