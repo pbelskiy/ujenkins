@@ -1,6 +1,7 @@
 import json
 import re
 
+import pytest
 import responses
 
 BUILDS_ALL_JSON = """{
@@ -99,6 +100,33 @@ def test_get_output(client):
 
     response = client.builds.get_output('job', 14)
     assert 'Started' in response
+
+
+@responses.activate
+def test_get_artifact(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/job/.+/artifact/file.bin'),
+        content_type='application/octet-stream',
+        body=b'\x01\x02\x03',
+    )
+
+    response = client.builds.get_artifact('job', 14, 'file.bin')
+    assert isinstance(response, bytes)
+    assert len(response) == 3
+
+
+@pytest.mark.asyncio
+async def test_async_get_artifact(aiohttp_mock, async_client):
+    aiohttp_mock.get(
+        re.compile(r'.*/job/.+/artifact/file.bin'),
+        content_type='application/octet-stream',
+        body=b'\x01\x02\x03',
+    )
+
+    response = await async_client.builds.get_artifact('job', 14, 'file.bin')
+    assert isinstance(response, bytes)
+    assert len(response) == 3
 
 
 @responses.activate

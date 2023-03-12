@@ -92,6 +92,20 @@ class Builds:
             _callback=self.jenkins._return_body,
         )
 
+    def get_artifact(self, name: str, build_id: Union[int, str], rel_path: str) -> bytes:
+
+        def callback(response) -> bytes:
+            return response.content
+
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        return self.jenkins._request(
+            'GET',
+            f'/{folder_name}/job/{job_name}/{build_id}/artifact/{rel_path}',
+            _raw_content=True,
+            _callback=callback,
+        )
+
     def start(self,
               name: str,
               parameters: Optional[Any] = None,

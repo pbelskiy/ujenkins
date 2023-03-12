@@ -22,6 +22,7 @@ class Response(NamedTuple):
     status: int
     headers: Union[CaseInsensitiveDict, CIMultiDictProxy]
     body: str
+    content: Optional[bytes] = None
 
 
 class Jenkins:

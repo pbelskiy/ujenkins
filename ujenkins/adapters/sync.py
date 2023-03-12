@@ -124,6 +124,7 @@ class JenkinsClient(Jenkins):
                       method: str,
                       path: str,
                       *,
+                      _raw_content: bool = False,
                       _callback: Optional[Callable] = None,
                       **kwargs: Any
                       ) -> Any:
@@ -147,8 +148,15 @@ class JenkinsClient(Jenkins):
             **kwargs
         )
 
+        if _raw_content:
+            text = '<binary>'
+            content = response.content
+        else:
+            text = response.text
+            content = None
+
         result = self._process(
-            Response(response.status_code, response.headers, response.text),
+            Response(response.status_code, response.headers, text, content),
             _callback
         )
 

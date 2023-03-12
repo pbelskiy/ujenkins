@@ -135,6 +135,7 @@ class AsyncJenkinsClient(Jenkins):
                             method: str,
                             path: str,
                             *,
+                            _raw_content: bool = False,
                             _callback: Optional[Callable] = None,
                             **kwargs: Any
                             ) -> Any:
@@ -159,10 +160,15 @@ class AsyncJenkinsClient(Jenkins):
             **kwargs
         )
 
-        body = await response.text()
+        if _raw_content:
+            text = '<binary>'
+            content = await response.read()
+        else:
+            text = await response.text()
+            content = None
 
         result = self._process(
-            Response(response.status, response.headers, body),
+            Response(response.status, response.headers, text, content),
             _callback
         )
 
