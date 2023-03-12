@@ -39,7 +39,7 @@ class Builds:
             List: list of build for specified job.
         """
         def callback(response) -> List[dict]:
-            return json.loads(response.body)['allBuilds']
+            return json.loads(response.text)['allBuilds']
 
         folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
 
@@ -89,7 +89,7 @@ class Builds:
         return self.jenkins._request(
             'GET',
             f'/{folder_name}/job/{job_name}/{build_id}/consoleText',
-            _callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_text,
         )
 
     def get_artifact(self, name: str, build_id: Union[int, str], rel_path: str) -> bytes:

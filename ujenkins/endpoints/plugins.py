@@ -16,7 +16,7 @@ class Plugins:
             Dict[str, dict] - plugin name and plugin properties.
         """
         def callback(response) -> Dict[str, dict]:
-            plugins = json.loads(response.body)['plugins']
+            plugins = json.loads(response.text)['plugins']
             return {p['shortName']: p for p in plugins}
 
         return self.jenkins._request(

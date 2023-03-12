@@ -40,7 +40,7 @@ class Jobs:
         """
         def callback(response):
             all_jobs = {}
-            jobs = json.loads(response.body)['jobs']
+            jobs = json.loads(response.text)['jobs']
             for job in jobs:
                 all_jobs[job['name']] = job
 
@@ -93,7 +93,7 @@ class Jobs:
         return self.jenkins._request(
             'GET',
             f'/{folder_name}/job/{job_name}/config.xml',
-            _callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_text,
         )
 
     def is_exists(self, name: str) -> bool:

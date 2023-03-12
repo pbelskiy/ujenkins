@@ -58,7 +58,7 @@ class Nodes:
 
         """
         def callback(response):
-            nodes = json.loads(response.body)
+            nodes = json.loads(response.text)
             return {v['displayName']: v for v in nodes['computer']}
 
         return self.jenkins._request(
@@ -90,7 +90,7 @@ class Nodes:
             }]
         """
         def callback(response) -> List[dict]:
-            return _parse_rss(response.body)
+            return _parse_rss(response.text)
 
         name = self._normalize_name(name)
 
@@ -123,7 +123,7 @@ class Nodes:
             }]
         """
         def callback(response) -> List[dict]:
-            return _parse_rss(response.body)
+            return _parse_rss(response.text)
 
         name = self._normalize_name(name)
 
@@ -177,7 +177,7 @@ class Nodes:
         return self.jenkins._request(
             'GET',
             f'/computer/{name}/config.xml',
-            _callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_text,
         )
 
     def is_exists(self, name: str) -> bool:

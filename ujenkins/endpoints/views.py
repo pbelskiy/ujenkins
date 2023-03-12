@@ -18,7 +18,7 @@ class Views:
             Dict[str, dict]: plugin name and plugin properties.
         """
         def callback(response):
-            views = json.loads(response.body)['views']
+            views = json.loads(response.text)['views']
             return {v['name']: v for v in views}
 
         return self.jenkins._request(
@@ -60,7 +60,7 @@ class Views:
         return self.jenkins._request(
             'GET',
             f'/view/{name}/config.xml',
-            _callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_text,
         )
 
     def create(self, name: str, config: str) -> None:

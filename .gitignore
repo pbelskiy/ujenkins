@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 .DS_Store
+
+# Custom
+test.py

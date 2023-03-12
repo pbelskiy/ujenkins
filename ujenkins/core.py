@@ -21,7 +21,7 @@ from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 class Response(NamedTuple):
     status: int
     headers: Union[CaseInsensitiveDict, CIMultiDictProxy]
-    body: str
+    text: str
     content: Optional[bytes] = None
 
 
@@ -39,7 +39,7 @@ class Jenkins:
     @staticmethod
     def _process(response: Response, callback: Optional[Callable] = None) -> Any:
         if response.status == HTTPStatus.NOT_FOUND:
-            raise JenkinsNotFoundError(response.body)
+            raise JenkinsNotFoundError(response.text)
 
         if response.status >= HTTPStatus.BAD_REQUEST:
             if response.status in (
@@ -47,9 +47,9 @@ class Jenkins:
                     HTTPStatus.FORBIDDEN,
                     HTTPStatus.INTERNAL_SERVER_ERROR
             ):
-                details = 'probably authentication problem:\n\n' + response.body
+                details = 'probably authentication problem:\n\n' + response.text
             else:
-                details = '\n\n' + response.body
+                details = '\n\n' + response.text
 
             raise JenkinsError(
                 f'Request error [{response.status}], {details}',
@@ -61,7 +61,7 @@ class Jenkins:
             return callback(response)
 
         if 'application/json' in response.headers.get('Content-Type', ''):
-            return json.loads(response.body)
+            return json.loads(response.text)
 
         return None
 
@@ -87,5 +87,5 @@ class Jenkins:
             raise JenkinsError('Invalid `total` in retry argument must be > 0')
 
     @staticmethod
-    def _return_body(response: Response) -> str:
-        return response.body
+    def _return_text(response: Response) -> str:
+        return response.text

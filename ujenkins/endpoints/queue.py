@@ -16,7 +16,7 @@ class Queue:
             Dict[int, dict]: id item in queue, and it's detailed information.
         """
         def callback(response):
-            items = json.loads(response.body)['items']
+            items = json.loads(response.text)['items']
             return {item['id']: item for item in items}
 
         return self.jenkins._request(

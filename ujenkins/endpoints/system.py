@@ -53,7 +53,7 @@ class System:
         """
         def callback(response):
             try:
-                status = response.body
+                status = response.text
                 return 'mode' in status
             except JenkinsError:
                 return False
@@ -113,7 +113,7 @@ class System:
                              tokenUuid - uses for revoke
         """
         def callback(response):
-            content = json.loads(response.body)
+            content = json.loads(response.text)
 
             if content['status'] != 'ok':
                 raise JenkinsError('Non OK status returned: ' + str(content))
@@ -163,5 +163,5 @@ class System:
             'POST',
             '/scriptText',
             data={'script': script},
-            _callback=self.jenkins._return_body,
+            _callback=self.jenkins._return_text,
         )
