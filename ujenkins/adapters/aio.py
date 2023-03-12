@@ -209,7 +209,7 @@ class AsyncJenkinsClient(Jenkins):
         """
         prev = None
 
-        for func in functions:
+        for i, func in enumerate(functions):
             try:
                 prev = func(prev)
 
@@ -221,6 +221,8 @@ class AsyncJenkinsClient(Jenkins):
                     else:
                         break
             except JenkinsError as e:
+                if i == len(functions) - 1:
+                    raise
                 prev = e
 
         return prev
