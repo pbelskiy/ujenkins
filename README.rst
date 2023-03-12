@@ -177,6 +177,10 @@ Working with build artifacts
 
 .. code:: python
 
+    # get content of artifact (bytes)
+    content = client.builds.get_artifact('my_job', 31, 'photo.jpg')
+
+    # enumerate artifacts
     artifacts = client.builds.get_list_artifacts('my_job', 31)
 
     for artifact in artifacts:
@@ -188,9 +192,6 @@ Working with build artifacts
         # or absolute url could be used for external download
         print(artifact['url'])
         # >> 'http://server/job/my_job/31/artifact/photo.jpg'
-
-`Please look at tests directory for more examples
-<https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
 
 Documentation
 -------------

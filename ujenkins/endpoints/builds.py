@@ -95,8 +95,24 @@ class Builds:
             _callback=self.jenkins._return_text,
         )
 
-    def get_artifact(self, name: str, build_id: Union[int, str], rel_path: str) -> bytes:
+    def get_artifact(self, name: str, build_id: Union[int, str], path: str) -> bytes:
+        """
+        Get console output of specified build.
 
+        Args:
+            name (str):
+                Job name or path (if in folder).
+
+            build_id (int):
+                Build number or some of standard tags like `lastBuild`.
+
+            path (str):
+                Relative path to build artifact, could be used from ``get_info()``
+                or ``get_list_artifacts()``, or just well known name.
+
+        Returns:
+            bytes: artifact content.
+        """
         def callback(response) -> bytes:
             return response.content
 
@@ -104,13 +120,37 @@ class Builds:
 
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/{build_id}/artifact/{rel_path}',
+            f'/{folder_name}/job/{job_name}/{build_id}/artifact/{path}',
             _raw_content=True,
             _callback=callback,
         )
 
     def get_list_artifacts(self, name: str, build_id: Union[int, str]) -> List[dict]:
+        """
+        Get list of build artifacts.
 
+        Example:
+
+            .. code-block:: python
+
+                [
+                    {
+                        'name': 'photo.jpg',
+                        'path': 'photo.jpg',
+                        'url': 'http://server/job/my_job/31/artifact/photo.jpg'
+                    }
+                ]
+
+        Args:
+            name (str):
+                Job name or path (if in folder).
+
+            build_id (int):
+                Build number or some of standard tags like `lastBuild`.
+
+        Returns:
+            List[dict]: list of build artifacts.
+        """
         def callback1(_) -> Any:
             return partial(self.get_info, name, build_id)
 
