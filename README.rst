@@ -179,15 +179,14 @@ Working with build artifacts
 
     # get content of artifact (bytes)
     content = client.builds.get_artifact('my_job', 31, 'photo.jpg')
+    with open('/tmp/photo.jpg', 'wb') as f:
+        w.write(content)
 
     # enumerate artifacts
     artifacts = client.builds.get_list_artifacts('my_job', 31)
-
     for artifact in artifacts:
         # get content and manually save it
         content = client.builds.get_artifact('my_job', 31, artifact['path'])
-        with open('/tmp/photo.jpg', 'wb') as f:
-            w.write(content)
 
         # or absolute url could be used for external download
         print(artifact['url'])
