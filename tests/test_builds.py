@@ -32,7 +32,11 @@ BUILD_INFO_JSON = """{
     }
   ],
   "artifacts" : [
-
+    {
+      "displayPath" : "photo.jpg",
+      "fileName" : "photo.jpg",
+      "relativePath" : "photo.jpg"
+    }
   ],
   "building" : false,
   "description" : null,
@@ -127,6 +131,23 @@ async def test_async_get_artifact(aiohttp_mock, async_client):
     response = await async_client.builds.get_artifact('job', 14, 'file.bin')
     assert isinstance(response, bytes)
     assert len(response) == 3
+
+
+@responses.activate
+def test_get_list_artifacts(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/json'),
+        content_type='application/json;charset=utf-8',
+        body=BUILD_INFO_JSON,
+    )
+
+    artifacts = client.builds.get_list_artifacts('jobbb', 14)
+
+    assert len(artifacts) == 1
+    assert artifacts[0]['name'] == 'photo.jpg'
+    assert artifacts[0]['path'] == 'photo.jpg'
+    assert artifacts[0]['url'] == 'http://server//job/jobbb/14/artifact/photo.jpg'
 
 
 @responses.activate

@@ -172,6 +172,23 @@ Output:
 
     all_jobs = get_all_jobs()
 
+Working with build artifacts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    artifacts = client.builds.get_list_artifacts('my_job', 31)
+
+    for artifact in artifacts:
+        # get content and manually save it
+        content = client.builds.get_artifact('my_job', 31, artifact['path'])
+        with open('/tmp/photo.jpg', 'wb') as f:
+            w.write(content)
+
+        # or absolute url could be used for external download
+        print(artifact['url'])
+        # >> 'http://server/job/my_job/31/artifact/photo.jpg'
+
 `Please look at tests directory for more examples
 <https://github.com/pbelskiy/ujenkins/tree/master/tests>`_
 

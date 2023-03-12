@@ -1,6 +1,9 @@
 import json
 
+from functools import partial
 from typing import Any, List, Optional, Union
+
+from ujenkins.exceptions import JenkinsError
 
 
 class Builds:
@@ -105,6 +108,35 @@ class Builds:
             _raw_content=True,
             _callback=callback,
         )
+
+    def get_list_artifacts(self, name: str, build_id: Union[int, str]) -> List[dict]:
+
+        def callback1(_) -> Any:
+            return partial(self.get_info, name, build_id)
+
+        def callback2(response: Any):
+            if isinstance(response, JenkinsError):
+                raise response
+
+            artifacts = []
+
+            for artifact in response['artifacts']:
+                artifacts.append({
+                    'name': artifact['fileName'],
+                    'path': artifact['relativePath'],
+                    'url': root_url + artifact['relativePath'],
+                })
+
+            return artifacts
+
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        root_url = (
+            self.jenkins.host +
+            f'/{folder_name}/job/{job_name}/{build_id}/artifact/'
+        )
+
+        return self.jenkins._chain([callback1, callback2])
 
     def start(self,
               name: str,
