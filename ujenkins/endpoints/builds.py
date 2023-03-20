@@ -97,7 +97,7 @@ class Builds:
 
     def get_artifact(self, name: str, build_id: Union[int, str], path: str) -> bytes:
         """
-        Get console output of specified build.
+        Get artifact content of specified build.
 
         Args:
             name (str):
