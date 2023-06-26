@@ -264,6 +264,21 @@ def test_start_with_mixed_parameters(client):
 
 
 @responses.activate
+def test_start_with_delay(client):
+    delay = 10
+    data = {'delay': f'{delay}sec'}
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/job/.+/build'),
+        headers={'Location': 'http://localhost:8080/queue/item/424/'},
+        match=[responses.matchers.query_param_matcher(data)],
+    )
+
+    response = client.builds.start('job', delay=delay)
+    assert response == 424
+
+
+@responses.activate
 def test_stop(client):
     responses.add(
         responses.POST,
