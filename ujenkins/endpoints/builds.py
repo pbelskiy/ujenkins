@@ -268,7 +268,7 @@ class Builds:
         return self.jenkins._request(
             'POST',
             path,
-            params={'delay': delay},
+            params={'delay': f'{delay}sec'},
             data=data,
             _callback=callback,
         )
