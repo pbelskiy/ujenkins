@@ -112,7 +112,7 @@ class JenkinsClient(Jenkins):
             total=retry['total'],
             backoff_factor=retry.get('factor', 1),
             status_forcelist=retry.get('statuses', []),
-            method_whitelist=retry.get('methods', [
+            allowed_methods=retry.get('methods', [
                 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'TRACE'
             ]),
         ))
