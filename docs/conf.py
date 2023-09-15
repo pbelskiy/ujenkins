@@ -26,8 +26,8 @@ init_file_path = os.path.join(
 with open(init_file_path, encoding='utf-8') as f:
     try:
         version = re.findall(r"__version__ = '(.*)'", f.read())[0]
-    except IndexError:
-        raise RuntimeError('Unable to get package version')
+    except IndexError as e:
+        raise RuntimeError('Unable to get package version') from e
 
 # -- Project information -----------------------------------------------------
 
