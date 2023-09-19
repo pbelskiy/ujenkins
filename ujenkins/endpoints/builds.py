@@ -21,10 +21,39 @@ class Builds:
     def __init__(self, jenkins) -> None:
         self.jenkins = jenkins
 
-    def get(self, name: str) -> List[dict]:
+    def get(self, name: str,
+            fields: Optional[Union[List[str], str]] = None,
+            start: Optional[int] = None, end: Optional[int] = None
+            ) -> List[dict]:
         """
         Get list of builds for specified job.
 
+        Available fields in jenkins:
+            - _class
+            - actions
+            - artifacts
+            - building
+            - description
+            - displayName
+            - duration
+            - estimatedDuration
+            - executor
+            - fingerprint
+            - fullDisplayName
+            - id
+            - keepLog
+            - number
+            - queueId
+            - result
+            - timestamp
+            - url
+            - changeSets
+            - culprits
+            - inProgress
+            - nextBuild
+            - previousBuild
+
+        Use * inside the list to get all fields.
         Example:
 
         .. code-block:: python
@@ -35,20 +64,36 @@ class Builds:
             ]
 
         Args:
-            name (str):
-                Job name or path (if in folder).
+            name (str): Job name or path (if in folder).
+            fields (Optional[Union[List[str], str]]): List of fields to return.
+                Possible values are mentioned in the available fields.
+                If empty, default fields will be returned.
+            start (int, optional): The start index of the builds to retrieve.
+                Used with the 'end' parameter to specify a range.
+                Defaults to None.
+            end (int, optional): The end index of the builds to retrieve.
+                Used with the 'start' parameter to specify a range.
+                Defaults to None.
 
         Returns:
-            List: list of build for specified job.
+            List[dict]: list of builds for specified job.
         """
+
+        page_string = ''
+        if end is not None or start is not None:
+            start_str = str(start) if start is not None else ''
+            end_str = str(end) if end is not None else ''
+            page_string = f'{{{start_str},{end_str}}}'
+
         def callback(response) -> List[dict]:
             return json.loads(response.text)['allBuilds']
 
         folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
 
+        fields = ','.join(fields) if fields else 'number,url'
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[number,url]',
+            f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[{fields}]{page_string}',
             _callback=callback,
         )
 
