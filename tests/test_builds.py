@@ -16,6 +16,28 @@ BUILDS_ALL_JSON = """{
 }
 """
 
+BUILDS_ALL_JSON_SELECTIVE = """{
+    "_class": "hudson.model.FreeStyleProject",
+    "allBuilds": [
+        {
+            "_class": "hudson.model.FreeStyleBuild",
+            "number": 2,
+            "url": "http://localhost:8080/job/jobbb/2/"
+        },
+        {
+            "_class": "hudson.model.FreeStyleBuild",
+            "number": 3,
+            "url": "http://localhost:8080/job/jobbb/3/"
+        },
+        {
+            "_class": "hudson.model.FreeStyleBuild",
+            "number": 4,
+            "url": "http://localhost:8080/job/jobbb/4/"
+        }
+    ]
+}
+"""
+
 BUILD_INFO_JSON = """{
   "_class" : "hudson.model.FreeStyleBuild",
   "actions" : [
@@ -78,6 +100,20 @@ def test_get(client):
     response = client.builds.get('job')
     assert len(response) == 1
     assert response[0]['number'] == 1
+
+
+@responses.activate
+def test_get_selective(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/json'),
+        body=BUILDS_ALL_JSON_SELECTIVE,
+    )
+    fields = ['number', 'url']
+    response = client.builds.get('job', fields=fields, start=1, end=3)
+    print(response)
+    assert len(response) == 3
+    assert response[0]['number'] == 2
 
 
 @responses.activate
