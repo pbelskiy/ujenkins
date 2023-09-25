@@ -4,39 +4,7 @@ import re
 import pytest
 import responses
 
-BUILDS_ALL_JSON = """{
-    "_class": "hudson.model.FreeStyleProject",
-    "allBuilds": [
-        {
-            "_class": "hudson.model.FreeStyleBuild",
-            "number": 1,
-            "url": "http://localhost:8080/job/jobbb/1/"
-        }
-    ]
-}
-"""
-
-BUILDS_ALL_JSON_SELECTIVE = """{
-    "_class": "hudson.model.FreeStyleProject",
-    "allBuilds": [
-        {
-            "_class": "hudson.model.FreeStyleBuild",
-            "number": 2,
-            "url": "http://localhost:8080/job/jobbb/2/"
-        },
-        {
-            "_class": "hudson.model.FreeStyleBuild",
-            "number": 3,
-            "url": "http://localhost:8080/job/jobbb/3/"
-        },
-        {
-            "_class": "hudson.model.FreeStyleBuild",
-            "number": 4,
-            "url": "http://localhost:8080/job/jobbb/4/"
-        }
-    ]
-}
-"""
+from tests.test_builds_response import filter_builds_response
 
 BUILD_INFO_JSON = """{
   "_class" : "hudson.model.FreeStyleBuild",
@@ -88,32 +56,82 @@ BUILD_INFO_JSON = """{
 }
 """
 
+params = [
+    # args, kwargs, mock_body, expectations
+    (
+        (),  # no args , no kwargs, expect to get everything with default fields
+        {},
+        # this is not automatically done, need to manually input the expected result
+        filter_builds_response(fields=['number', 'url'], start=1, end=5),
+        {
+            'length': 5,
+            'idx': 4,
+            'url': 'https://localhost:8080/job/dev/job/testgene/2/',
+            'number': 2,
+            'request_url': 'http://server//job/job/api/json?tree=allBuilds%5Bnumber,url%5D',
+        },
+    ),
+    (
+        (['number']),
+        # test a single item without kwargs we expect to fail
+        # because we need to use kwargs for fields
+        {},
+        filter_builds_response(fields=['number'], start=1, end=5),
+        {
+            'length': 5,
+            'idx': 4,
+            'number': 2,
+            'request_url': 'http://server//job/job/api/json?tree=allBuilds%5Bnumber%5D',
+            'error': TypeError
+        }
+    ),
+    (
+        (),  # test selections with start only
+        {'fields': ['number', 'url', 'timestamp'], 'start': 3},
+        filter_builds_response(fields=['number', 'url', 'timestamp'], start=3, end=5),
+        {
+            'length': 3,
+            'idx': 1,
+            'number': 3,
+            'request_url':
+                'http://server//job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B3,%7D'
+        }
+    ),
+    (
+        (),  # test selections with end only
+        {'fields': ['number', 'url', 'timestamp'], 'end': 2},
+        filter_builds_response(fields=['number', 'url', 'timestamp'], start=4, end=5),
+        {
+            'length': 2,
+            'idx': 2,
+            'number': 1,
+            'request_url':
+                'http://server//job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B,2%7D'
+        }
+    )
+]
 
+
+@pytest.mark.parametrize('args,kwargs,mock_body,expectations', params)
 @responses.activate
-def test_get(client):
+def test_get(client, args, kwargs, mock_body, expectations):
     responses.add(
         responses.GET,
         re.compile(r'.*/api/json'),
-        body=BUILDS_ALL_JSON,
+        body=mock_body,
     )
+    if 'error' in expectations:
+        with pytest.raises(expectations['error']):
+            client.builds.get('job', *args, **kwargs)
+    else:
+        response = client.builds.get('job', *args, **kwargs)
+        request_url = responses.calls[0].request.url
 
-    response = client.builds.get('job')
-    assert len(response) == 1
-    assert response[0]['number'] == 1
-
-
-@responses.activate
-def test_get_selective(client):
-    responses.add(
-        responses.GET,
-        re.compile(r'.*/api/json'),
-        body=BUILDS_ALL_JSON_SELECTIVE,
-    )
-    fields = ['number', 'url']
-    response = client.builds.get('job', fields=fields, start=1, end=3)
-    print(response)
-    assert len(response) == 3
-    assert response[0]['number'] == 2
+        assert len(response) == expectations['length']
+        assert response[expectations['idx']-1]['number'] == expectations['number']
+        if 'url' in expectations:
+            assert response[expectations['idx']-1]['url'] == expectations['url']
+        assert request_url == expectations['request_url']
 
 
 @responses.activate
