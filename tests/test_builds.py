@@ -68,7 +68,7 @@ params = [
             'idx': 4,
             'url': 'https://localhost:8080/job/dev/job/testgene/2/',
             'number': 2,
-            'request_url': 'http://server//job/job/api/json?tree=allBuilds%5Bnumber,url%5D',
+            'request_url': '//job/job/api/json?tree=allBuilds%5Bnumber,url%5D',
         },
     ),
     (
@@ -78,10 +78,6 @@ params = [
         {},
         filter_builds_response(fields=['number'], start=1, end=5),
         {
-            'length': 5,
-            'idx': 4,
-            'number': 2,
-            'request_url': 'http://server//job/job/api/json?tree=allBuilds%5Bnumber%5D',
             'error': TypeError
         }
     ),
@@ -94,7 +90,7 @@ params = [
             'idx': 1,
             'number': 3,
             'request_url':
-                'http://server//job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B3,%7D'
+                '//job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B3,%7D'
         }
     ),
     (
@@ -106,7 +102,7 @@ params = [
             'idx': 2,
             'number': 1,
             'request_url':
-                'http://server//job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B,2%7D'
+                '//job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B,2%7D'
         }
     )
 ]
@@ -125,7 +121,7 @@ def test_get(client, args, kwargs, mock_body, expectations):
             client.builds.get('job', *args, **kwargs)
     else:
         response = client.builds.get('job', *args, **kwargs)
-        request_url = responses.calls[0].request.url
+        request_url = responses.calls[0].request.url.replace(client.host, '')
 
         assert len(response) == expectations['length']
         assert response[expectations['idx']-1]['number'] == expectations['number']

@@ -75,11 +75,13 @@ class Builds:
                 Possible values are mentioned in the available fields.
                 If empty, default fields will be returned.
 
-            start (Optional[int]): The start index of the builds to retrieve.
+            start (Optional[int]):
+                The start index of the builds to retrieve.
                 Used with the 'end' parameter to specify a range.
                 Defaults to None.
 
-            end (Optional[int]): The end index of the builds to retrieve.
+            end (Optional[int]):
+                The end index of the builds to retrieve.
                 Used with the 'start' parameter to specify a range.
                 Defaults to None.
 

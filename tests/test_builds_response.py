@@ -232,12 +232,14 @@ def filter_builds_response(fields=None, start=None, end=None):
     Args:
     - data (list of dict):
         The list containing Jenkins build data.
+
     - fields (list of str, optional):
         The fields you want to retain. If None, or contains '*', all fields are retained
 
 
     Returns:
-    - list of dict: Filtered Jenkins build data.
+    - JSON (str):
+         Filtered Jenkins build data in JSON format.
     """
 
     # Filter by range if start and end are provided
