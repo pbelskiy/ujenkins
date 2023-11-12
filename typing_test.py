@@ -1,34 +1,46 @@
 import asyncio
 
-from typing import Any
+from typing import Any, Coroutine, overload, TypeVar, Generic, Union
 
 
-class Builds:
-    def __init__(self, jenkins) -> None:
+ClientT = TypeVar('ClientT', bound=Union['JenkinsClient', 'AsyncJenkinsClient'])
+
+
+class Builds(Generic[ClientT]):
+    def __init__(self, jenkins: ClientT) -> None:
         self.jenkins = jenkins
 
-    def get(self, name: str) -> str:
+    @overload
+    def get(self: 'Builds[JenkinsClient]', name: str) -> str:
+        ...
+
+    @overload
+    def get(self: 'Builds[AsyncJenkinsClient]', name: str) -> Coroutine[Any, Any, str]:
+        ...
+
+    def get(self, name: str) -> str | Coroutine[Any, Any, str]:
         return self.jenkins._request(name)
 
 
-class Jenkins:
+class AsyncJenkinsClient:
     def __init__(self) -> None:
         self.builds = Builds(self)
 
-
-class AsyncJenkinsClient(Jenkins):
     async def _request(self, name: str) -> Any:
         return name
 
 
-class JenkinsClient(Jenkins):
+class JenkinsClient:
+    def __init__(self) -> None:
+        self.builds = Builds(self)
+
     def _request(self, name: str) -> Any:
         return name
 
 
-async def main():
-    client = AsyncJenkinsClient()
-    result = await client.builds.get('async')
+async def main() -> None:
+    async_client = AsyncJenkinsClient()
+    result = await async_client.builds.get('async')
     print(result)
 
     client = JenkinsClient()
