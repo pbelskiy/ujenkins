@@ -1,7 +1,7 @@
 import asyncio
 
 from http import HTTPStatus
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Coroutine, List, Optional, Union
 
 from aiohttp import (
     BasicAuth,
@@ -14,6 +14,15 @@ from aiohttp import (
 
 from ujenkins.adapters import CRUMB_ISSUER_URL
 from ujenkins.core import Jenkins, JenkinsError, JenkinsNotFoundError, Response
+from ujenkins.endpoints import (
+    Builds,
+    Jobs,
+    Nodes,
+    Plugins,
+    Queue,
+    System,
+    Views,
+)
 
 
 class RetryClientSession:
@@ -108,6 +117,14 @@ class AsyncJenkinsClient(Jenkins):
             AsyncClient instance
         """
         super().__init__()
+
+        self.builds = Builds(self)
+        self.jobs = Jobs(self)
+        self.nodes = Nodes[Coroutine[Any, Any, str]](self)
+        self.plugins = Plugins(self)
+        self.queue = Queue(self)
+        self.system = System(self)
+        self.views = Views(self)
 
         self.host = url.rstrip('/')
         self.crumb = None  # type: Any

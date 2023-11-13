@@ -6,15 +6,6 @@ from typing import Any, Callable, NamedTuple, Optional, Tuple, Union
 from multidict import CIMultiDictProxy
 from requests.structures import CaseInsensitiveDict
 
-from ujenkins.endpoints import (
-    Builds,
-    Jobs,
-    Nodes,
-    Plugins,
-    Queue,
-    System,
-    Views,
-)
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
 
@@ -26,15 +17,6 @@ class Response(NamedTuple):
 
 
 class Jenkins:
-
-    def __init__(self) -> None:
-        self.builds = Builds(self)
-        self.jobs = Jobs(self)
-        self.nodes = Nodes(self)
-        self.plugins = Plugins(self)
-        self.queue = Queue(self)
-        self.system = System(self)
-        self.views = Views(self)
 
     @staticmethod
     def _process(response: Response, callback: Optional[Callable] = None) -> Any:
