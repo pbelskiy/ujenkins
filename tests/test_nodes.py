@@ -3,6 +3,7 @@ import re
 import pytest
 import responses
 
+from ujenkins import AsyncJenkinsClient
 from ujenkins.exceptions import JenkinsError
 
 NODES_JSON = """{
@@ -354,7 +355,7 @@ def test_reconfigure(client):
 
 
 @pytest.mark.asyncio
-async def test_async_enable(aiohttp_mock, async_client):
+async def test_async_enable(aiohttp_mock, async_client: AsyncJenkinsClient) -> None:
     aiohttp_mock.get(
         re.compile(r'.+/computer/.+/api/json'),
         content_type='application/json;charset=utf-8',
@@ -367,8 +368,7 @@ async def test_async_enable(aiohttp_mock, async_client):
         body='',
     )
 
-    response = await async_client.nodes.enable('master')
-    assert response is None
+    await async_client.nodes.enable('master')
 
 
 @responses.activate

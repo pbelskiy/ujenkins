@@ -7,6 +7,15 @@ from urllib3.util.retry import Retry
 
 from ujenkins.adapters import CRUMB_ISSUER_URL
 from ujenkins.core import Jenkins, Response
+from ujenkins.endpoints import (
+    Builds,
+    Jobs,
+    Nodes,
+    Plugins,
+    Queue,
+    System,
+    Views,
+)
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
 
@@ -93,6 +102,14 @@ class JenkinsClient(Jenkins):
             Client instance
         """
         super().__init__()
+
+        self.builds = Builds(self)
+        self.jobs = Jobs(self)
+        self.nodes = Nodes[str](self)
+        self.plugins = Plugins(self)
+        self.queue = Queue(self)
+        self.system = System(self)
+        self.views = Views(self)
 
         self.host = url.rstrip('/')
         self.session = Session()

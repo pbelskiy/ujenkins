@@ -2,10 +2,12 @@ import json
 import xml.etree.ElementTree
 
 from functools import partial
-from typing import Any, Dict, List
+from typing import Any, Generic, List, TypeVar, cast
 
 from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 from ujenkins.helpers import parse_build_url
+
+R = TypeVar('R')
 
 
 def _parse_rss(rss: str) -> List[dict]:
@@ -28,7 +30,7 @@ def _parse_rss(rss: str) -> List[dict]:
     return list(reversed(builds))
 
 
-class Nodes:
+class Nodes(Generic[R]):
 
     def __init__(self, jenkins) -> None:
         self.jenkins = jenkins
@@ -40,7 +42,7 @@ class Nodes:
             return '(master)'
         return name
 
-    def get(self) -> Dict[str, dict]:
+    def get(self) -> R:  # Dict[str, dict]
         """
         Get all available nodes on server.
 
@@ -61,13 +63,13 @@ class Nodes:
             nodes = json.loads(response.text)
             return {v['displayName']: v for v in nodes['computer']}
 
-        return self.jenkins._request(
+        return cast(R, self.jenkins._request(
             'GET',
             '/computer/api/json',
             _callback=callback,
-        )
+        ))
 
-    def get_failed_builds(self, name: str) -> List[dict]:
+    def get_failed_builds(self, name: str) -> R:  # List[dict]
         """
         Return list of detalizied failed builds for node name. Actually it
         parsed from RSS feed. usefull for build restart. Ascending builds sort.
@@ -94,13 +96,13 @@ class Nodes:
 
         name = self._normalize_name(name)
 
-        return self.jenkins._request(
+        return cast(R, self.jenkins._request(
             'GET',
             f'/computer/{name}/rssFailed',
             _callback=callback
-        )
+        ))
 
-    def get_all_builds(self, name: str) -> List[dict]:
+    def get_all_builds(self, name: str) -> R:  # List[dict]
         """
         Return list of all detalizied builds for node name, actually it parsed
         from RSS feed. Ascending builds sort.
@@ -127,13 +129,13 @@ class Nodes:
 
         name = self._normalize_name(name)
 
-        return self.jenkins._request(
+        return cast(R, self.jenkins._request(
             'GET',
             f'/computer/{name}/rssAll',
             _callback=callback
-        )
+        ))
 
-    def get_info(self, name: str) -> dict:
+    def get_info(self, name: str) -> R:  # dict
         """
         Get node detailed information.
 
@@ -159,9 +161,9 @@ class Nodes:
             return response
 
         name = self._normalize_name(name)
-        return self.jenkins._chain([callback1, callback2])
+        return cast(R, self.jenkins._chain([callback1, callback2]))
 
-    def get_config(self, name: str) -> str:
+    def get_config(self, name: str) -> R:  # str
         """
         Return node config in XML format.
 
@@ -174,13 +176,13 @@ class Nodes:
         """
         name = self._normalize_name(name)
 
-        return self.jenkins._request(
+        return cast(R, self.jenkins._request(
             'GET',
             f'/computer/{name}/config.xml',
             _callback=self.jenkins._return_text,
-        )
+        ))
 
-    def is_exists(self, name: str) -> bool:
+    def is_exists(self, name: str) -> R:  # bool
         """
         Check is node exist.
 
@@ -192,7 +194,7 @@ class Nodes:
             bool: node existing.
         """
         if name == '':
-            return False
+            return cast(R, False)
 
         def callback1(_) -> Any:
             return partial(self.get_info, name)
@@ -203,9 +205,9 @@ class Nodes:
 
             return True
 
-        return self.jenkins._chain([callback1, callback2])
+        return cast(R, self.jenkins._chain([callback1, callback2]))
 
-    def create(self, name: str, config: dict) -> None:
+    def create(self, name: str, config: dict) -> R:  # None
         """
         Create new node.
 
@@ -225,7 +227,7 @@ class Nodes:
         def callback1(_) -> Any:
             return partial(self.get)
 
-        def callback2(response: Any) -> bool:
+        def callback2(response: Any) -> R:  # bool
             # if not check, then we get 400 error with unclear stacktrace
             if name in response:
                 raise JenkinsError(f'Node `{name}` is already exists')
@@ -241,15 +243,15 @@ class Nodes:
                 'json': json.dumps(config)
             }
 
-            return self.jenkins._request(
+            return cast(R, self.jenkins._request(
                 'POST',
                 '/computer/doCreateItem',
                 params=params,
-            )
+            ))
 
-        return self.jenkins._chain([callback1, callback2])
+        return cast(R, self.jenkins._chain([callback1, callback2]))
 
-    def delete(self, name: str) -> None:
+    def delete(self, name: str) -> R:  # None
         """
         Delete node.
 
@@ -262,12 +264,12 @@ class Nodes:
         """
         name = self._normalize_name(name)
 
-        return self.jenkins._request(
+        return cast(R, self.jenkins._request(
             'POST',
             f'/computer/{name}/doDelete'
-        )
+        ))
 
-    def reconfigure(self, name: str, config: str) -> None:
+    def reconfigure(self, name: str, config: str) -> R:  # None
         """
         Reconfigure node.
 
@@ -286,14 +288,14 @@ class Nodes:
         if name == '(master)':
             raise JenkinsError('Cannot reconfigure master node')
 
-        return self.jenkins._request(
+        return cast(R, self.jenkins._request(
             'POST',
             f'/computer/{name}/config.xml',
             data=config,
             headers={'Content-Type': 'text/xml'},
-        )
+        ))
 
-    def enable(self, name: str) -> None:
+    def enable(self, name: str) -> R:
         """
         Enable node if it disabled.
 
@@ -309,16 +311,18 @@ class Nodes:
         def callback1(_) -> Any:
             return partial(self.get_info, name)
 
-        def callback2(response: dict) -> None:
+        def callback2(response: dict) -> R:  # None
             # skip if already enabled
             if response['temporarilyOffline'] is False:
-                return None
+                return cast(R, None)
 
-            return self.jenkins._request('POST', f'/computer/{name}/toggleOffline')
+            return cast(R, self.jenkins._request(
+                'POST', f'/computer/{name}/toggleOffline'
+            ))
 
-        return self.jenkins._chain([callback1, callback2])
+        return cast(R, self.jenkins._chain([callback1, callback2]))
 
-    def disable(self, name: str, message: str = '') -> None:
+    def disable(self, name: str, message: str = '') -> R:  # None
         """
         Disable node if it enabled.
 
@@ -337,20 +341,20 @@ class Nodes:
         def callback1(_) -> Any:
             return partial(self.get_info, name)
 
-        def callback2(response: dict) -> None:
+        def callback2(response: dict) -> R:
             # skip if already disabled
             if response['temporarilyOffline'] is True:
-                return None
+                return cast(R, None)
 
-            return self.jenkins._request(
+            return cast(R, self.jenkins._request(
                 'POST',
                 f'/computer/{name}/toggleOffline',
                 params={'offlineMessage': message},
-            )
+            ))
 
-        return self.jenkins._chain([callback1, callback2])
+        return cast(R, self.jenkins._chain([callback1, callback2]))
 
-    def update_offline_reason(self, name: str, message: str) -> None:
+    def update_offline_reason(self, name: str, message: str) -> R:  # None
         """
         Update reason message of disabled node.
 
@@ -366,13 +370,13 @@ class Nodes:
         """
         name = self._normalize_name(name)
 
-        return self.jenkins._request(
+        return cast(R, self.jenkins._request(
             'POST',
             f'/computer/{name}/changeOfflineCause',
             params={'offlineMessage': message}
-        )
+        ))
 
-    def launch_agent(self, name: str) -> None:
+    def launch_agent(self, name: str) -> R:  # None
         """
         Launch agent on node, for example in case when disconnected.
 
@@ -388,7 +392,7 @@ class Nodes:
         """
         name = self._normalize_name(name)
 
-        return self.jenkins._request(
+        return cast(R, self.jenkins._request(
             'POST',
             f'/computer/{name}/launchSlaveAgent',
-        )
+        ))
