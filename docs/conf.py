@@ -77,6 +77,8 @@ html_favicon = 'favicon.ico'
 
 html_theme_options = {
     'logo': 'logo.svg',
+    'page_width': '60%',
+    'sidebar_width': '25%',
 }
 
 html_sidebars = {
