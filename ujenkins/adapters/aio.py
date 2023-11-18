@@ -13,7 +13,8 @@ from aiohttp import (
 )
 
 from ujenkins.adapters import CRUMB_ISSUER_URL
-from ujenkins.core import Jenkins, JenkinsError, JenkinsNotFoundError, Response
+from ujenkins.core import Jenkins, Response
+from ujenkins.exceptions import JenkinsError, JenkinsNotFoundError
 
 
 class RetryClientSession:
