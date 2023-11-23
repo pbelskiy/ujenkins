@@ -42,7 +42,7 @@ setup_args = dict(
 )
 
 install_requires = [
-    'aiohttp>3.6.2,<4.0.0',
+    'aiohttp>3.6.2,<3.9.0',
     'requests>=2.24.0,<3.0.0',
     'urllib3>=1.26,<3',
 ]
