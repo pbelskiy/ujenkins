@@ -30,6 +30,7 @@ setup_args = dict(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
     license='MIT',
     packages=find_packages(),
@@ -41,8 +42,8 @@ setup_args = dict(
 )
 
 install_requires = [
-    'aiohttp>3.6.2,<3.9.0',
-    'requests>=2.24.0,<3.0.0',
+    'aiohttp~=3.6',
+    'requests~=2.24',
     'urllib3>=1.26,<3',
 ]
 
