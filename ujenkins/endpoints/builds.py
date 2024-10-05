@@ -1,7 +1,7 @@
 import json
 
 from functools import partial
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, Dict, cast
 
 from ujenkins.exceptions import JenkinsError
 
@@ -100,10 +100,42 @@ class Builds:
 
         folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
 
-        fields_str = ','.join(fields) if fields else 'number,url'
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[{fields_str}]{pagination}',
+            f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[number,url]',
+            _callback=callback,
+        )
+
+    def get_build_ids(self, job_name: str, axis: str) -> List[int]:
+        """
+        Get list of build ids for specified job.
+
+        Args:
+            name (str):
+                Job name or path (if in folder).
+
+        Returns:
+            List[int]: list of build ids for specified job.
+        """
+
+        def callback(response) -> List[int]:
+            # TODO: handle empty matrix
+            return [d["number"] for d in json.loads(response.text)['allBuilds']]
+
+        return self.jenkins._request(
+            'GET',
+            f'/job/{job_name}/{axis}/api/json?tree=allBuilds[number]',
+            _callback=callback,
+        )
+
+    def get_matrix_axis_names(self, job_name: str) -> List[str]:
+        def callback(response) -> List[str]:
+            # TODO: handle empty matrix
+            return [d["name"] for d in json.loads(response.text)['activeConfigurations']]
+
+        return self.jenkins._request(
+            'GET',
+            f'/job/{job_name}/api/json?tree=activeConfigurations[name]',
             _callback=callback,
         )
 
@@ -126,6 +158,60 @@ class Builds:
         return self.jenkins._request(
             'GET',
             f'/{folder_name}/job/{job_name}/{build_id}/api/json'
+        )
+
+    def get_matrix_info(self, job_name: str, axis: str, build_id: Union[int, str]) -> dict:
+        """
+        Get detailed information about specified build number of job.
+
+        Args:
+            job_name (str):
+                Job name.
+
+            axis (str):
+                Axis value
+
+            build_id (int):
+                Build number or some of standard tags like `lastBuild`.
+
+        Returns:
+            dict: information about build.
+        """
+
+        return self.jenkins._request(
+            'GET',
+            f'/job/{job_name}/{axis}/{build_id}/api/json'
+        )
+    
+    def get_matrix_test_report(
+        self,
+        job_name: str,
+        axis: str,
+        build_id: Union[int, str],
+    ) -> Dict[str, Any]:
+        """
+        Get test report for specified build number of job.
+
+        Args:
+            job_name (str):
+                Job name.
+
+            axis (str):
+                Axis value
+
+            build_id (int):
+                Build number or some of standard tags like `lastBuild`.
+
+        Returns:
+            dict: test report.
+        """
+
+        return cast(
+            Dict[str, Any],
+            self.jenkins._request(
+                'GET',
+                f'/job/{job_name}/{axis}/{build_id}/testReport/api/json'
+            )
         )
 
     def get_output(self, name: str, build_id: Union[int, str]) -> str:
@@ -229,6 +315,57 @@ class Builds:
         root_url = (
             self.jenkins.host +
             f'/{folder_name}/job/{job_name}/{build_id}/artifact/'
+        )
+
+        return self.jenkins._chain([callback1, callback2])
+    
+    def get_matrix_list_artifacts(self, job_name: str, axis: str, build_id: Union[int, str]) -> List[dict]:
+        """
+        Get list of build artifacts.
+
+        Example:
+
+            .. code-block:: python
+
+                [
+                    {
+                        'name': 'photo.jpg',
+                        'path': 'photo.jpg',
+                        'url': 'http://server/job/my_job/31/artifact/photo.jpg'
+                    }
+                ]
+
+        Args:
+            name (str):
+                Job name or path (if in folder).
+
+            build_id (int):
+                Build number or some of standard tags like `lastBuild`.
+
+        Returns:
+            List[dict]: list of build artifacts.
+        """
+        def callback1(_) -> Any:
+            return partial(self.get_matrix_info, job_name, axis, build_id)
+
+        def callback2(response: Any):
+            if isinstance(response, JenkinsError):
+                raise response
+
+            artifacts = []
+
+            for artifact in response['artifacts']:
+                artifacts.append({
+                    'name': artifact['fileName'],
+                    'path': artifact['relativePath'],
+                    'url': root_url + artifact['relativePath'],
+                })
+
+            return artifacts
+
+        root_url = (
+            self.jenkins.host +
+            f'/job/{job_name}/{axis}/{build_id}/artifact/'
         )
 
         return self.jenkins._chain([callback1, callback2])
