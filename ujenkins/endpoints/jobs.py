@@ -4,7 +4,7 @@ from functools import partial
 from typing import Any, Dict, Optional
 
 from ujenkins.exceptions import JenkinsNotFoundError
-from ujenkins.helpers import fix_path
+from ujenkins.helpers import normalize_url
 
 
 class Jobs:
@@ -75,7 +75,7 @@ class Jobs:
 
         return self.jenkins._request(
             'GET',
-            fix_path(f'/{folder_name}/job/{job_name}/api/json')
+            normalize_url(f'/{folder_name}/job/{job_name}/api/json')
         )
 
     def get_config(self, name: str) -> str:
@@ -93,7 +93,7 @@ class Jobs:
 
         return self.jenkins._request(
             'GET',
-            fix_path(f'/{folder_name}/job/{job_name}/config.xml'),
+            normalize_url(f'/{folder_name}/job/{job_name}/config.xml'),
             _callback=self.jenkins._return_text,
         )
 
@@ -145,7 +145,7 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            fix_path(f'/{folder_name}/createItem'),
+            normalize_url(f'/{folder_name}/createItem'),
             params=params,
             data=config,
             headers=headers
@@ -171,7 +171,7 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            fix_path(f'/{folder_name}/job/{job_name}/config.xml'),
+            normalize_url(f'/{folder_name}/job/{job_name}/config.xml'),
             data=config,
             headers={'Content-Type': 'text/xml'},
         )
@@ -191,7 +191,7 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            fix_path(f'/{folder_name}/job/{job_name}/doDelete')
+            normalize_url(f'/{folder_name}/job/{job_name}/doDelete')
         )
 
     def copy(self, name: str, new_name: str) -> None:
@@ -218,7 +218,7 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            fix_path(f'/{folder_name}/createItem'),
+            normalize_url(f'/{folder_name}/createItem'),
             params=params
         )
 
@@ -244,7 +244,7 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            fix_path(f'/{folder_name}/job/{job_name}/doRename'),
+            normalize_url(f'/{folder_name}/job/{job_name}/doRename'),
             params=params
         )
 
@@ -263,7 +263,7 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            fix_path(f'/{folder_name}/job/{job_name}/enable')
+            normalize_url(f'/{folder_name}/job/{job_name}/enable')
         )
 
     def disable(self, name: str) -> None:
@@ -281,5 +281,5 @@ class Jobs:
 
         return self.jenkins._request(
             'POST',
-            fix_path(f'/{folder_name}/job/{job_name}/disable')
+            normalize_url(f'/{folder_name}/job/{job_name}/disable')
         )

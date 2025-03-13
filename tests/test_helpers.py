@@ -5,7 +5,7 @@ from ujenkins.helpers import (
     construct_job_config,
     construct_node_config,
     parse_build_url,
-    fix_path,
+    normalize_url,
 )
 
 
@@ -46,10 +46,10 @@ def test_parse_build_urlt():
         parse_build_url('xxx')
 
 
-def test_fix_path():
+def test_normalize_url():
     # double slashes appear if folder name is empty
     invalid_path = '//job/job_name/enable'
-    assert fix_path(invalid_path) == '/job/job_name/enable'
+    assert normalize_url(invalid_path) == '/job/job_name/enable'
 
     valid_path = '/folder_name/job/job_name/enable'
-    assert fix_path(valid_path) == '/folder_name/job/job_name/enable'
+    assert normalize_url(valid_path) == '/folder_name/job/job_name/enable'

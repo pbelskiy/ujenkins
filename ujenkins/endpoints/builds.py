@@ -4,6 +4,7 @@ from functools import partial
 from typing import Any, List, Optional, Union
 
 from ujenkins.exceptions import JenkinsError
+from ujenkins.helpers import normalize_url
 
 
 class Builds:
@@ -103,7 +104,7 @@ class Builds:
         fields_str = ','.join(fields) if fields else 'number,url'
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[{fields_str}]{pagination}',
+            normalize_url(f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[{fields_str}]{pagination}'),
             _callback=callback,
         )
 
@@ -125,7 +126,7 @@ class Builds:
 
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/{build_id}/api/json'
+            normalize_url(f'/{folder_name}/job/{job_name}/{build_id}/api/json')
         )
 
     def get_output(self, name: str, build_id: Union[int, str]) -> str:
@@ -146,7 +147,7 @@ class Builds:
 
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/{build_id}/consoleText',
+            normalize_url(f'/{folder_name}/job/{job_name}/{build_id}/consoleText'),
             _callback=self.jenkins._return_text,
         )
 
@@ -175,7 +176,7 @@ class Builds:
 
         return self.jenkins._request(
             'GET',
-            f'/{folder_name}/job/{job_name}/{build_id}/artifact/{path}',
+            normalize_url(f'/{folder_name}/job/{job_name}/{build_id}/artifact/{path}'),
             _raw_content=True,
             _callback=callback,
         )
@@ -228,7 +229,7 @@ class Builds:
 
         root_url = (
             self.jenkins.host +
-            f'/{folder_name}/job/{job_name}/{build_id}/artifact/'
+            normalize_url(f'/{folder_name}/job/{job_name}/{build_id}/artifact/')
         )
 
         return self.jenkins._chain([callback1, callback2])
@@ -312,7 +313,7 @@ class Builds:
             return data
 
         folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
-        path = f'/{folder_name}/job/{job_name}'
+        path = normalize_url(f'/{folder_name}/job/{job_name}')
 
         data = format_data(parameters, kwargs)
         if data:
@@ -346,7 +347,7 @@ class Builds:
 
         return self.jenkins._request(
             'POST',
-            f'/{folder_name}/job/{job_name}/{build_id}/stop'
+            normalize_url(f'/{folder_name}/job/{job_name}/{build_id}/stop')
         )
 
     def delete(self, name: str, build_id: Union[int, str]) -> None:
@@ -367,5 +368,5 @@ class Builds:
 
         return self.jenkins._request(
             'POST',
-            f'/{folder_name}/job/{job_name}/{build_id}/doDelete'
+            normalize_url(f'/{folder_name}/job/{job_name}/{build_id}/doDelete')
         )

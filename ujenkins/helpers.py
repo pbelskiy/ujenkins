@@ -163,7 +163,7 @@ def parse_build_url(build_url: str) -> Tuple[str, int]:
     return name, int(match.group('build_number'))
 
 
-def fix_path(path: str) -> str:
+def normalize_url(path: str) -> str:
     """
     Amend job path in case it starts from two forward slashes.
 
