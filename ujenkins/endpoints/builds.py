@@ -104,7 +104,10 @@ class Builds:
         fields_str = ','.join(fields) if fields else 'number,url'
         return self.jenkins._request(
             'GET',
-            normalize_url(f'/{folder_name}/job/{job_name}/api/json?tree=allBuilds[{fields_str}]{pagination}'),
+            normalize_url(
+                f'/{folder_name}/job/{job_name}/api/'
+                f'json?tree=allBuilds[{fields_str}]{pagination}'
+            ),
             _callback=callback,
         )
 
