@@ -68,7 +68,7 @@ params = [
             'idx': 4,
             'url': 'https://localhost:8080/job/dev/job/testgene/2/',
             'number': 2,
-            'request_url': '//job/job/api/json?tree=allBuilds%5Bnumber,url%5D',
+            'request_url': '/job/job/api/json?tree=allBuilds%5Bnumber,url%5D',
         },
     ),
     (
@@ -90,7 +90,7 @@ params = [
             'idx': 1,
             'number': 3,
             'request_url':
-                '//job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B3,%7D'
+                '/job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B3,%7D'
         }
     ),
     (
@@ -102,7 +102,7 @@ params = [
             'idx': 2,
             'number': 1,
             'request_url':
-                '//job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B,2%7D'
+                '/job/job/api/json?tree=allBuilds%5Bnumber,url,timestamp%5D%7B,2%7D'
         }
     )
 ]
@@ -197,7 +197,7 @@ def test_get_list_artifacts(client):
     assert len(artifacts) == 1
     assert artifacts[0]['name'] == 'photo.jpg'
     assert artifacts[0]['path'] == 'photo.jpg'
-    assert artifacts[0]['url'] == 'http://server//job/jobbb/14/artifact/photo.jpg'
+    assert artifacts[0]['url'] == 'http://server/job/jobbb/14/artifact/photo.jpg'
 
 
 @responses.activate
