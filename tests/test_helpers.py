@@ -4,8 +4,8 @@ from ujenkins.exceptions import JenkinsError
 from ujenkins.helpers import (
     construct_job_config,
     construct_node_config,
-    parse_build_url,
     normalize_url,
+    parse_build_url,
 )
 
 
