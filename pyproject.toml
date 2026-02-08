@@ -1,6 +1,13 @@
 [tool.ruff]
 line-length = 99
-select = ['E', 'F', 'B', 'Q']
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint]
+select = ['E', 'F', 'B', 'Q', 'I']
+
+[tool.ruff.lint.flake8-quotes]
 inline-quotes = 'single'
+
+[tool.ruff.lint.isort]
+known-third-party = ['requests', 'responses', 'pytest']
+lines-between-types = 1
+split-on-trailing-comma = true
