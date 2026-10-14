@@ -144,6 +144,39 @@ def test_get_info(client):
 
 
 @responses.activate
+def test_get_stages(client):
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/job/.+/14/wfapi/describe'),
+        content_type='application/json;charset=utf-8',
+        body=json.dumps({
+            'id': '14',
+            'status': 'SUCCESS',
+            'stages': [
+                {'name': 'Build', 'startTimeMillis': 1000, 'durationMillis': 500},
+                {'name': 'Test', 'startTimeMillis': 1500, 'durationMillis': 700},
+            ],
+        }),
+    )
+
+    response = client.builds.get_stages('job', 14)
+    assert [s['name'] for s in response] == ['Build', 'Test']
+    assert response[1]['durationMillis'] == 700
+
+
+@pytest.mark.asyncio
+async def test_async_get_stages(aiohttp_mock, async_client):
+    aiohttp_mock.get(
+        re.compile(r'.*/job/.+/14/wfapi/describe'),
+        content_type='application/json;charset=utf-8',
+        body=json.dumps({'stages': [{'name': 'Build'}]}),
+    )
+
+    response = await async_client.builds.get_stages('job', 14)
+    assert response == [{'name': 'Build'}]
+
+
+@responses.activate
 def test_get_output(client):
     responses.add(
         responses.GET,

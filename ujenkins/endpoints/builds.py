@@ -132,6 +132,35 @@ class Builds:
             normalize_url(f'/{folder_name}/job/{job_name}/{build_id}/api/json')
         )
 
+    def get_stages(self, name: str, build_id: Union[int, str]) -> List[dict]:
+        """
+        Get list of pipeline stages of specified build.
+
+        Requires Pipeline: Stage View plugin (wfapi).
+
+        Args:
+            name (str):
+                Job name or path (if in folder).
+
+            build_id (int):
+                Build number or some of standard tags like `lastBuild`.
+
+        Returns:
+            List[dict]: list of stages with fields like `name`, `status`,
+            `startTimeMillis`, `durationMillis`, `pauseDurationMillis`.
+        """
+
+        def callback(response) -> List[dict]:
+            return json.loads(response.text)['stages']
+
+        folder_name, job_name = self.jenkins._get_folder_and_job_name(name)
+
+        return self.jenkins._request(
+            'GET',
+            normalize_url(f'/{folder_name}/job/{job_name}/{build_id}/wfapi/describe'),
+            _callback=callback,
+        )
+
     def get_output(self, name: str, build_id: Union[int, str]) -> str:
         """
         Get console output of specified build.
